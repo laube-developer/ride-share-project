@@ -37,3 +37,54 @@ O sistema suporta diversas formas de pagamento, modeladas de forma extensível:
 `CartaoDebito`: Implementa a lógica de transação a débito.
 
 Essa estrutura permite adicionar novas formas de pagamento (ex: `Dinheiro`, `Voucher`) no futuro sem modificar a lógica central do sistema de corridas (princípio **Aberto/Fechado** do SOLID).
+
+## 6. Passo a passo para trabalhar
+O projeto tem duas branchs: `main` e `develop`.
+
+- `main` (ou master): Esta branch deve conter apenas o código 100% funcional e pronto para entrega. Ninguém deve enviar código diretamente para ela.
+
+- `develop`: Esta será a branch de integração. Todo o trabalho novo, quando finalizado e revisado, será mesclado (merged) aqui. Ela representa a versão de desenvolvimento mais atual do projeto.
+
+As tarefas estão na aba [Issues](/issues).
+
+### Passo 1 - Sincronizar com develop.
+**`Sempre antes de mexer em qualquer coisa`**
+
+```bash
+git checkout develop
+git pull origin develop
+```
+
+### Passo 2 - Criar sua Feature Branch
+**`Sempre que for iniciar uma nova feature`**
+
+```bash
+#Cria uma nova branch e já muda para ela
+#git checkout -b luis/feat/classes-usuario-heranca
+git checkout -b nome-do-membro/feature/nome-da-tarefa
+```
+
+### Passo 3 - Trabalhar e "Committar"
+Agora, você está na sua branch isolada. Pode trabalhar à vontade. Seu trabalho não afeta ninguém e o trabalho de ninguém afeta você.
+
+Lembre-se de fazer commits pequenos e organizados por funcionalidade.
+
+```bash
+git add .
+git commit -m "feat: Cria classe abstrata Usuario e herança de Passageiro"
+```
+
+### Passo 4 - Abrir um Pull Request (PR)
+Quando sua tarefa estiver concluída (ex: Luís terminou todas as classes de usuário), você envia sua branch para o GitHub e abre um Pull Request (PR).
+
+```bash
+git push origin luis/feat/classes-usuario-heranca
+```
+
+No GitHub, você abrirá um PR da sua branch (luis/feat/classes-usuario-heranca) para a branch develop.
+
+### Passo 5: Revisão de Código (Code Review)
+Revisar o código no github (Procurar o pull request)
+
+### Passo 6: Mesclar (Merge)
+Após o PR ser aprovado, **`O LIDER`** clica no botão "Merge" no GitHub. Seu código agora é oficialmente parte da branch develop.
