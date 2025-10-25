@@ -1,4 +1,7 @@
 # Ride Drive Project (Java)
+
+![Banner](/banner.png)
+
 ## 1. Visão Geral
 O Ride Drive Project é um sistema de gerenciamento de transporte por aplicativo, simulando funcionalidades básicas de plataformas de carona/corrida. O projeto é desenvolvido em Java e utiliza amplamente os princípios da Orientação a Objetos (POO) para garantir um código modular, flexível e de fácil manutenção.
 ## 2. Conceitos e Tecnologias
