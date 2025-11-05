@@ -1,4 +1,4 @@
-public class usuario {
+public class Usuario {
     String nome;
     String email;
     String senha;
@@ -43,7 +43,7 @@ public class usuario {
         	return this.senha == senha;
         }
 
-        public avaliacao getavaliacao() {
+        public float avaliacao getAvaliacao() {
             return avaliacao;
         }
 
