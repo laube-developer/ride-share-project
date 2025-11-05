@@ -1,18 +1,17 @@
-public class usuario {
+public class Usuario {
     String nome;
     String email;
     String senha;
-    float saldoTotal;
     String cpf;
     String telefone;
+    avaliacao avaliacao;
 
     
     // Construtor
-    public usuario(String nome, String email, String senha, float saldoTotal, String cpf, String telefone) {
+    public usuario(String nome, String email, String senha, String cpf, String telefone) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
-        this.saldoTotal = saldoTotal;
         this.cpf = cpf;
         this.telefone = telefone;
     }
@@ -44,12 +43,8 @@ public class usuario {
         	return this.senha == senha;
         }
 
-        public float getSaldoTotal() {
-            return saldoTotal;
-        }
-
-        public void setSaldoTotal(float saldoTotal) {
-            this.saldoTotal = saldoTotal;
+        public float avaliacao getAvaliacao() {
+            return avaliacao;
         }
 
         public String getCPF() {
@@ -70,4 +65,3 @@ public class usuario {
     }
 
     
-
