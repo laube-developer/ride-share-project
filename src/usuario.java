@@ -8,7 +8,7 @@ public class usuario {
 
     
     // Construtor
-    public usuario(String nome, String email, String senha, float saldoTotal, String cpf, String telefone) {
+    public usuario(String nome, String email, String senha, String cpf, String telefone) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
