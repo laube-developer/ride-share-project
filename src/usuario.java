@@ -6,6 +6,7 @@ public class usuario {
     String cpf;
     String telefone;
 
+    
     // Construtor
     public usuario(String nome, String email, String senha, float saldoTotal, String cpf, String telefone) {
         this.nome = nome;
