@@ -1,19 +1,25 @@
+package entidades;
+
+import java.util.List;
+
 public class Usuario {
     String nome;
     String email;
     String senha;
     String cpf;
     String telefone;
-    avaliacao avaliacao;
+    float avaliacao;
+    List<Avaliacao> avaliacoes;
+    int somaTotalAvaliacoes;
 
-    
-    // Construtor
-    public usuario(String nome, String email, String senha, String cpf, String telefone) {
+    protected Usuario(String nome, String email, String senha, String cpf, String telefone) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
         this.cpf = cpf;
         this.telefone = telefone;
+        this.avaliacoes = List.of();
+        this.somaTotalAvaliacoes = 0;
     }
 
         // Getters e Setters
@@ -40,15 +46,21 @@ public class Usuario {
         }
 
         public boolean verificarSenha(String senha) {
-        	return this.senha == senha;
+        		return this.senha == senha;
         }
-
-<<<<<<< HEAD
-        public Avaliacao getAvaliacao() {
-=======
-        public float avaliacao getAvaliacao() {
->>>>>>> ce9853bfb68f0aa27cd47d54ffe215fadcbd0ed4
+        
+        public float getAvaliacao() {
             return avaliacao;
+        }
+        
+        public Avaliacao getAvaliacaoById(int id) {
+        		return avaliacoes.get(id);
+        }
+        
+        public void addAvaliacao(Avaliacao a) {
+        		avaliacoes.add(a);
+        		somaTotalAvaliacoes += a.getNota().getValor();
+        		avaliacao = somaTotalAvaliacoes / avaliacoes.size();
         }
 
         public String getCPF() {
