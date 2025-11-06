@@ -4,7 +4,7 @@ public class usuario {
     String senha;
     String cpf;
     String telefone;
-    avaliacao avaliacao;
+    Avaliacao avaliacao;
 
     
     // Construtor
@@ -43,7 +43,7 @@ public class usuario {
         	return this.senha == senha;
         }
 
-        public avaliacao getavaliacao() {
+        public Avaliacao getAvaliacao() {
             return avaliacao;
         }
 
