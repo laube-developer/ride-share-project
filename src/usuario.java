@@ -43,7 +43,11 @@ public class Usuario {
         	return this.senha == senha;
         }
 
+<<<<<<< HEAD
+        public Avaliacao getAvaliacao() {
+=======
         public float avaliacao getAvaliacao() {
+>>>>>>> ce9853bfb68f0aa27cd47d54ffe215fadcbd0ed4
             return avaliacao;
         }
 
@@ -62,6 +66,6 @@ public class Usuario {
         public void setTelefone(String telefone) {
             this.telefone = telefone;
         }
-    }
+}
 
     

@@ -2,7 +2,7 @@ public class avaliacao {
     usuario usuarioAvaliador;
     usuario usuarioAvaliado;
     notaenum nota;
-    //não entendi oq é o unsigned long total de avaliações
+    long totalAvaliacoes;
 
     public avaliacao(usuario usuarioAvaliador, usuario usuarioAvaliado, notaenum nota) {
         this.usuarioAvaliador = usuarioAvaliador;
