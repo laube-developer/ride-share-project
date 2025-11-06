@@ -1,10 +1,12 @@
-public class veiculo {
+package entidades;
+
+public class Veiculo {
     String placa;
     String modelo;
     String cor;
     int ano;
 
-    public veiculo(String placa, String modelo, String cor, int ano) {
+    public Veiculo(String placa, String modelo, String cor, int ano) {
         this.placa = placa;
         this.modelo = modelo;
         this.cor = cor;
@@ -43,6 +45,4 @@ public class veiculo {
     public void setAno(int ano) {
         this.ano = ano;
     }
-
-    //não entendi esse verificar validade
 }
