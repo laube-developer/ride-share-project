@@ -6,7 +6,7 @@ public class motorista extends usuario {
     
     public motorista(String nome, String email, String senha, String cpf, String telefone) {
         super(nome, email, senha, cpf, telefone);
-
+        
     }
 
     // Getters e Setters
