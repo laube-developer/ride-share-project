@@ -1,14 +1,14 @@
-public class usuario {
+public class Usuario {
     String nome;
     String email;
     String senha;
     String cpf;
     String telefone;
-    Avaliacao avaliacao;
+    avaliacao avaliacao;
 
     
     // Construtor
-    public usuario(String nome, String email, String senha, float saldoTotal, String cpf, String telefone) {
+    public usuario(String nome, String email, String senha, String cpf, String telefone) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
@@ -43,7 +43,11 @@ public class usuario {
         	return this.senha == senha;
         }
 
+<<<<<<< HEAD
         public Avaliacao getAvaliacao() {
+=======
+        public float avaliacao getAvaliacao() {
+>>>>>>> ce9853bfb68f0aa27cd47d54ffe215fadcbd0ed4
             return avaliacao;
         }
 

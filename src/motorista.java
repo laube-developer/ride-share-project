@@ -3,12 +3,10 @@ public class motorista extends usuario {
     //veiculo ativo atributo
     cnh cnh;
     status status;
-    float saldo;
     
-    public motorista(String nome, String email, String senha, float saldo, String cpf, String telefone) {
-        super(nome, email, senha, saldo, cpf, telefone);
-        this.saldo = saldo;
-
+    public motorista(String nome, String email, String senha, String cpf, String telefone) {
+        super(nome, email, senha, cpf, telefone);
+        
     }
 
     // Getters e Setters
