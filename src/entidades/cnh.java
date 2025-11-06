@@ -10,6 +10,7 @@ public class CNH {
         this.numero = numero;
         this.validade = validade;
     }
+    
     // Getters e Setters
     public String getNumero() {
         return numero;

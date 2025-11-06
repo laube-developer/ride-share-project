@@ -5,7 +5,7 @@ public class Passageiro extends Usuario{
 	
 	private MeioDePagamento[] meioDePagamento;
 	
-	Passageiro(String nome, String email, String senha, String cpf, String telefone){
+	public Passageiro(String nome, String email, String senha, String cpf, String telefone){
 		super(nome, email, senha, cpf, telefone);
 		
 		this.nome = nome;

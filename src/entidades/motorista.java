@@ -10,7 +10,7 @@ public class Motorista extends Usuario {
     CNH cnh;
     StatusMotoristaEnum status;
     
-    Motorista(
+    public Motorista(
     		String nome,
     		String email,
     		String senha,

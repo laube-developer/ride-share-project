@@ -12,7 +12,7 @@ public class Usuario {
     List<Avaliacao> avaliacoes;
     int somaTotalAvaliacoes;
 
-     Usuario(String nome, String email, String senha, String cpf, String telefone) {
+    protected Usuario(String nome, String email, String senha, String cpf, String telefone) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
