@@ -1,10 +1,12 @@
+package entidades;
+
 import java.time.LocalDate;
 
-public class cnh {
+public class CNH {
     String numero;
     LocalDate validade;
 
-    public cnh(String numero, LocalDate validade) {
+    public CNH(String numero, LocalDate validade) {
         this.numero = numero;
         this.validade = validade;
     }

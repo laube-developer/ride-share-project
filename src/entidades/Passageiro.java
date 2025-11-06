@@ -1,11 +1,12 @@
-public class Passageiro extends usuario{
+package entidades;
+
+public class Passageiro extends Usuario{
 
 	
 	private MeioDePagamento[] meioDePagamento;
 	
 	Passageiro(String nome, String email, String senha, String cpf, String telefone){
 		super(nome, email, senha, cpf, telefone);
-		
 		
 		this.nome = nome;
 		this.email = email;
