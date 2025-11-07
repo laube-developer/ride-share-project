@@ -1,4 +1,4 @@
-public class motorista extends usuario {
+public class motorista extends Usuario {
     veiculo veiculo;
     //veiculo ativo atributo
     cnh cnh;

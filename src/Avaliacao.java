@@ -1,21 +1,21 @@
-public class avaliacao {
-    usuario usuarioAvaliador;
-    usuario usuarioAvaliado;
+public class Avaliacao {
+    Usuario usuarioAvaliador;
+    Usuario usuarioAvaliado;
     notaenum nota;
     //não entendi oq é o unsigned long total de avaliações
 
-    public avaliacao(usuario usuarioAvaliador, usuario usuarioAvaliado, notaenum nota) {
+    public Avaliacao(Usuario usuarioAvaliador, Usuario usuarioAvaliado, notaenum nota) {
         this.usuarioAvaliador = usuarioAvaliador;
         this.usuarioAvaliado = usuarioAvaliado;
         this.nota = nota;
     }
 
     // Getters e Setters
-    public usuario getUsuarioAvaliador(usuario usuarioAvaliador) {
+    public Usuario getUsuarioAvaliador(Usuario usuarioAvaliador) {
         return usuarioAvaliador;
     }
 
-    public usuario getUsuarioAvaliado(usuario usuarioAvaliado) {
+    public Usuario getUsuarioAvaliado(Usuario usuarioAvaliado) {
         return usuarioAvaliado;
     }
 

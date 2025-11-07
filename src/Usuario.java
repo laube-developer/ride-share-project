@@ -1,14 +1,14 @@
 public class Usuario {
-    String nome;
-    String email;
-    String senha;
-    String cpf;
-    String telefone;
-    avaliacao avaliacao;
+    private String nome;
+    private String email;
+    private String senha;
+    private String cpf;
+    private String telefone;
+    private Avaliacao avaliacao;
 
     
     // Construtor
-    public usuario(String nome, String email, String senha, String cpf, String telefone) {
+    public Usuario(String nome, String email, String senha, String cpf, String telefone) {
         this.nome = nome;
         this.email = email;
         this.senha = senha;
