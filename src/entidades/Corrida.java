@@ -3,8 +3,6 @@ package entidades;
 import enums.CategoriaCorridaEnum;
 import enums.StatusCorridaEnum;
 
-import java.util.List;
-
 public class Corrida {
 	private GeoLocalizacao localPartida;
 	private GeoLocalizacao localDestino;
@@ -89,7 +87,7 @@ public class Corrida {
 		
 		//Processar o cancelamento da corrida
 
-		status = CategoriaCorridaEnum.CANCELADA;		
+		status = StatusCorridaEnum.CANCELADA;		
 		return true;
 		
 		
