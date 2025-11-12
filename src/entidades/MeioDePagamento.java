@@ -1,49 +1,30 @@
 package entidades;
 
-public class MeioDePagamento {
+public abstract class MeioDePagamento {
 	
 	private String nomeMeioPagamento;
 	private int saldo;
 	
-	public MeioDePagamento(String nome){
+	public MeioDePagamento(String nome, int saldo){
 		nomeMeioPagamento = nome;
+		this.saldo = saldo;
 	}
 	
-	public boolean processarPagamento(int valorParaPagar){
-		boolean processou=false;
-		
-		if(nomeMeioPagamento == "PIX" || nomeMeioPagamento == "Dinheiro") {
-			if(saldo >= valorParaPagar) {
-				saldo = saldo - valorParaPagar;
-				processou = true;
-			}
-			else
-				System.out.println("Saldo em " + nomeMeioPagamento + " insuficiente");
+	public abstract boolean processarPagamento(int valorParaPagar);
 	
-		}
-		else
-			processou = true;
-
-		
-		if(processou){
-			System.out.println("Pagamento por "+ nomeMeioPagamento +" processado com sucesso!");
-		}else
-			System.out.println("Erro ao processar pagamento!");
-
-		return processou;
-	}
+	public abstract void adicionarSaldo(int valor);
 	
-	public void adicionarSaldo(int valor){
-		saldo = saldo + valor;
-		System.out.println("Valor adicionado com sucesso, seu novo saldo em" + nomeMeioPagamento + ": " + saldo);
-	}	
-	
-	public int getSaldo(){
+	public int getSaldo() {
 		return saldo;
 	}
-	
-	public String toString() {
-		return "asdas";
+	public void setSaldo(int saldo) {
+		this.saldo = saldo;
 	}
 	
+	//public abstract String toString();
+
+	public String getNomeMeioPagamento() {
+		return nomeMeioPagamento;
+	}
+
 }
