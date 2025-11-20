@@ -22,7 +22,10 @@ public class RideDrive{
     		CNH cnhRafael = new CNH("1549166654", validade);
     		
     		m.setCNH(cnhRafael);
-    		
+
+			System.out.println(CNH.verificarvalidade(m.getCNH().getValidade()));
+
     		System.out.println(m.getCNH().getValidade().format(formatter));
+    		
     }
 }
