@@ -61,4 +61,13 @@ public class Motorista extends Usuario {
     public StatusMotoristaEnum getStatus() {
         return status;
     }
+    
+    public String toString() {
+    	return "Motorista: \n"+
+    			"    "+nome + "\n" +
+    			"    "+email + "\n" +
+    			"    "+cpf + "\n" +
+    			"    "+telefone + "\n";
+
+    }
 }

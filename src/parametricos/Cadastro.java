@@ -4,12 +4,12 @@ public class Cadastro <T> {
 	
 	private Object[] lista;
 	private int tamanhoMax;
-	private int tamanhoQnt=0;
+	private int tamanho = 0;
 	
-	Cadastro(int tamanho){
+	public Cadastro(int tamanho){
 		lista = new Object[tamanho];
 			
-		tamanhoMax = tamanho; 
+		this.tamanhoMax = tamanho;
 	}
 
 	public Object[] getList(){
@@ -17,42 +17,65 @@ public class Cadastro <T> {
 	}
 	
 	public boolean adicionar(T t) {
-		if(tamanhoQnt >= tamanhoMax) {
+		if(tamanho >= tamanhoMax) {
 			System.out.println("Quantidade máxima atingida!");
 			return false;
 		}
 		
-		lista[tamanhoQnt] = t;
-		
-		tamanhoQnt++;
+		lista[tamanho] = t;
+		tamanho ++;
 		
 		return true;
 	}
 	
 	
-	public void remover(T t) {
-		for(int i =0; i<tamanhoMax; i++) {
-			if(lista[i] == t) {
-				lista[i] = null;
-				
-				for(int j=i; j<tamanhoMax-1;j++) {
-					lista[j] = lista[j+1];
-				}
-				for(int j=tamanhoMax-1; j>tamanhoQnt-1 ;j--) {
-					lista[j] = null;
-				}
-				
-				tamanhoQnt--;
-				
-				return;
+	public void remover(Object x) {
+		boolean jaEncontrou = false;
+		
+		for(int i =0; i < lista.length - 1; i++) {
+			jaEncontrou |= lista[i] == x;
+			
+			if (jaEncontrou) {
+				lista[i] = lista[i+1];
 			}
+			
 		}
-		System.out.println("Nao foi encontrado o objeto a ser removido!");
+		
+		if (jaEncontrou) {
+			lista[tamanho] = null;
+			tamanho--;
+			return;
+		}
+
+		
+		System.out.println("O objeto a ser removido não foi encontrado!");
 		
 	}
 	
 	public int getQuantidade() {
-        return tamanhoQnt;
+        return tamanho;
     }
 
+	public Object buscarPorId(int id) {
+		if (id >= tamanhoMax || id < 0) {
+			System.out.println("Índice inválido");
+			return null;
+		}
+		
+		return lista[id];
+	}
+	
+	public int indexOf(Object x) {
+		for (int i = 0; i < tamanho; i++) {
+			if (lista[i] == x) return i;
+		}
+		
+		System.out.println("Objeto não encontrado.");
+		return -1;
+	}
+	
+	public Object first() {
+		return lista[0];
+	}
+	
 }
