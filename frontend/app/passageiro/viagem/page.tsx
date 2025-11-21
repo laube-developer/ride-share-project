@@ -1,11 +1,14 @@
 "use client"
 
+import Header from '@/components/Header';
+import InterfacePrincipal from '@/components/InterfacePrincipal';
 import { LocalizacaoAtual } from '@/components/maps/LocalizacaoAtual';
 import MenuPassageiro from '@/components/maps/MenuPassageiro';
 import RouteCalculator from '@/components/maps/RouteCalculator';
 import RoutePolyline from '@/components/maps/RoutePolyline.tsx';
 import {AdvancedMarker, APIProvider, Map} from '@vis.gl/react-google-maps';
 import { useEffect, useState } from 'react';
+
 
 export default function ViagemPage() {
   const [posicao, setPosicao] = useState<{ lat: number; lng: number } | null>(null);
@@ -49,11 +52,14 @@ export default function ViagemPage() {
         disableDefaultUI
         mapId={process.env.NEXT_PUBLIC_MAP_ID!}
       >
-        <MenuPassageiro
-          onSelecionarOrigem={handleSelecionarOrigem}
-          onSelecionarDestino={handleSelecionarDestino}
-          onBuscarMotorista={() => setMostrarRota(true)}
-        />
+        <InterfacePrincipal>
+          <Header />
+          <MenuPassageiro
+            onSelecionarOrigem={handleSelecionarOrigem}
+            onSelecionarDestino={handleSelecionarDestino}
+            onBuscarMotorista={() => setMostrarRota(true)}
+          />
+        </InterfacePrincipal>
         <LocalizacaoAtual posicao={posicao} />
         
         <RouteCalculator

@@ -17,7 +17,7 @@ export default function MenuPassageiro({onSelecionarOrigem, onSelecionarDestino,
   const map = useMap();
 
   return (
-    <div className="absolute top-4 left-4 right-4 items-center flex justify-center z-20">
+    <div className="items-center flex justify-center">
         <div className="bg-white bg-opacity-90 rounded-md shadow-xl p-4 z-20 w-[60%]">
             <FieldGroup className="flex flex-row">
 

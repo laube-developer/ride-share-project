@@ -16,7 +16,7 @@ export default function Passageiro(){
                 />
             </div>
 
-            <form className="flex flex-col gap-6 p-12 z-10 bg-white rounded-lg shadow-lg justify-center w-110">
+            <form action={'/api/passageiro/login'} method="POST" className="flex flex-col gap-6 p-12 z-10 bg-white rounded-lg shadow-lg justify-center w-110">
                 <FieldGroup>
                     <div>
                         <h2 className="text-2xl mb-5 border-b-3 border-[#fdc426] w-max">Passageiro</h2>

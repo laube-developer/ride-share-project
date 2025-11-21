@@ -1,5 +1,6 @@
 "use client"
 import Button from "@/components/Button";
+import Header from "@/components/Header";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -10,6 +11,7 @@ export default function Home() {
 
   return (
     <div className="flex flex-col gap-2 items-center h-screen  bg-linear-to-br from-[#ffcb2c] to-[#fdc426] text-black ">
+      <Header />
       <div className="flex items-center h-full">
         <div className="grid place-items-center m-auto gap-8 grid-cols-[auto_auto]">
           <div>
