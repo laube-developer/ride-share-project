@@ -1,7 +1,5 @@
+import { redirect } from "next/navigation";
+
 export default function Passageiro(){
-    return (
-        <div className="flex justify-center items-center h-screen">
-            Página do Passageiro
-        </div>
-    )
+    return redirect('/passageiro/login');
 }
