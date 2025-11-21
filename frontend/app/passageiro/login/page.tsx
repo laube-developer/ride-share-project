@@ -10,7 +10,7 @@ export default function Passageiro(){
                 <Image 
                     width={1920}
                     height={1500}
-                    src="/login_background_1.jpg"
+                    src="/login_background.jpg"
                     alt="Sharing Drive Logo"
                     className="object-cover h-full"
                 />
@@ -38,7 +38,7 @@ export default function Passageiro(){
                     <Field>
                         <FieldLabel htmlFor="password" className="flex justify-between">
                             Senha
-                            <a href="/passageiro/recuperar-senha">Esqueci a senha</a>
+                            <a href="/passageiro/recuperar-senha" className="text-primary hover:underline cursor-pointer text-sky-700">Esqueci a senha</a>
                         </FieldLabel>
                         <Input
                             id="password"
@@ -50,7 +50,7 @@ export default function Passageiro(){
                     </Field>
 
                     <Field orientation={"horizontal"} className="justify-center items-center">
-                        <a href="/passageiro/criar-conta">Ainda não tenho conta</a>
+                        <a href="/passageiro/criar-conta" className="text-primary hover:underline cursor-pointer text-sky-700">Ainda não tenho conta</a>
                     </Field>
 
                     <Field orientation="horizontal">

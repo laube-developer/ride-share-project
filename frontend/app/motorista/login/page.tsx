@@ -3,9 +3,9 @@ import { Field, FieldDescription, FieldGroup, FieldLabel, FieldLegend } from "@/
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
 
-export default function RecuperarSenhaPassageiro(){
+export default function Passageiro(){
     return (
-        <div className="w-full h-screen flex flex-col py-5 px-3 justify-center items-center bg-white">
+        <div className="w-full h-screen flex py-5 px-3 justify-center items-center bg-white">
             <div className="flex w-full h-full absolute left-0 top-0">
                 <Image 
                     width={1920}
@@ -20,29 +20,42 @@ export default function RecuperarSenhaPassageiro(){
                 <FieldGroup>
                     <div>
                         <h2 className="text-2xl mb-5 border-b-3 border-[#fdc426] w-max">Passageiro</h2>
-                        <h1 className="text-4xl">Recuperar a senha</h1>
-                        <p className="text-gray-500 mt-2">Acesso o link no seu email para recuparar a senha</p>
+                        <h1 className="text-4xl font-wheith">Entre em sua conta</h1>
+                        <p className="text-gray-500">Realize o login para continuar</p>
                     </div>
                     <Field>
-                        <FieldLabel htmlFor="username">
+                        <FieldLabel htmlFor="email">
                         Email
                         </FieldLabel>
                         <Input
-                            id="username"
-                            name="username"
-                            placeholder="Enzo123"
+                            id="email"
+                            name="email"
+                            placeholder="exemplo@mail.com"
+                            required
+                        />
+                    </Field>
+
+                    <Field>
+                        <FieldLabel htmlFor="password" className="flex justify-between">
+                            Senha
+                            <a href="/passageiro/recuperar-senha">Esqueci a senha</a>
+                        </FieldLabel>
+                        <Input
+                            id="password"
+                            name="password"
+                            type="password"
+                            placeholder="********"
                             required
                         />
                     </Field>
 
                     <Field orientation={"horizontal"} className="justify-center items-center">
-                        Lembrou de sua senha? <a href="/passageiro/login" className="text-primary hover:underline cursor-pointer text-sky-700">Entrar</a>
+                        <a href="/passageiro/criar-conta">Ainda não tenho conta</a>
                     </Field>
 
                     <Field orientation="horizontal">
-                        <Button type="submit" className="cursor-pointer bg-[#fdc426] text-black hover:bg-[#ffcb2c] w-full">Enviar solicitação</Button>
+                        <Button type="submit" className="cursor-pointer bg-[#fdc426] text-black hover:bg-[#ffcb2c] w-full">Entrar</Button>
                     </Field>
-
                     
                 </FieldGroup>
             </form>

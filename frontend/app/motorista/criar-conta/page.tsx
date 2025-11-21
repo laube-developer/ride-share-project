@@ -88,7 +88,7 @@ export default function Passageiro(){
                     </Field>
 
                     <Field orientation={"horizontal"} className="justify-center items-center">
-                        <a href="/passageiro/login" className="text-primary hover:underline cursor-pointer text-sky-700">Já tenho conta</a>
+                        <a href="/passageiro/login">Já tenho conta</a>
                     </Field>
 
 

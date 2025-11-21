@@ -120,7 +120,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-a {
-  @apply text-primary hover:underline cursor-pointer text-sky-700;
-}

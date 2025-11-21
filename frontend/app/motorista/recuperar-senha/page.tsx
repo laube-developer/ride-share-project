@@ -36,7 +36,7 @@ export default function RecuperarSenhaPassageiro(){
                     </Field>
 
                     <Field orientation={"horizontal"} className="justify-center items-center">
-                        Lembrou de sua senha? <a href="/passageiro/login" className="text-primary hover:underline cursor-pointer text-sky-700">Entrar</a>
+                        Lembrou de sua senha? <a href="/passageiro/login">Entrar</a>
                     </Field>
 
                     <Field orientation="horizontal">
