@@ -4,8 +4,28 @@ import { Button } from "../ui/button";
 import { DropdownMenuShortcut } from "../ui/dropdown-menu";
 import Link from "next/link";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function Header() {
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!window) return;
+
+    window.onkeydown = function (e) {
+      if (e.ctrlKey && e.shiftKey && e.key === 'V') {
+        router.push('/passageiro/minhas-viagens');
+      };
+      if (e.shiftKey && e.key === 'P') {
+        router.push('/motorista/dados-pessoais');
+      };
+      if (e.shiftKey && e.key === 'P') {
+        router.push('/motorista/dados-pessoais');
+      };
+    }
+  }, []);
+
   return (
     <header className="w-full bg-white shadow-md p-4 flex items-center justify-start">
       <Link href={'/'} className="flex flex-row items-center">
@@ -30,7 +50,7 @@ export default function Header() {
         <DropdownMenuContent className="w-56" align="start">
           <DropdownMenuLabel>Viagem</DropdownMenuLabel>
           <DropdownMenuGroup>
-            <DropdownMenuItem onClick={() => {alert('Abrir dados pessoais.')}}>
+            <DropdownMenuItem onClick={() => {router.push('/passageiro/minhas-viagens')}}>
               Minhas viagens
               <DropdownMenuShortcut>⇧⌘V</DropdownMenuShortcut>
             </DropdownMenuItem>
