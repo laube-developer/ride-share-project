@@ -1,4 +1,4 @@
-package main.java.com.example.entidades;
+package com.example.entidades;
 
 public class Veiculo {
     String placa;

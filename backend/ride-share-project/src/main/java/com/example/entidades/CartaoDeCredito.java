@@ -1,4 +1,4 @@
-package main.java.com.example.entidades;
+package com.example.entidades;
 import java.time.LocalDate;
 
 public class CartaoDeCredito extends MeioDePagamento {

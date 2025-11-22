@@ -1,8 +1,8 @@
-package main.java.com.example.entidades;
+package com.example.entidades;
 
 import java.util.List;
 
-import main.java.com.example.enums.StatusMotoristaEnum;
+import com.example.enums.StatusMotoristaEnum;
 
 public class Motorista extends Usuario {
     Veiculo veiculoAtivo;

@@ -1,4 +1,4 @@
-package main.java.com.example.parametricos;
+package com.example.parametricos;
 
 public class Cadastro <T> {
 	
