@@ -16,7 +16,7 @@ export default function Passageiro(){
                 />
             </div>
 
-            <form action={'/api/passageiro/login'} method="POST" className="flex flex-col gap-6 p-12 z-10 bg-white rounded-lg shadow-lg justify-center w-110">
+            <form action={`${process.env.NEXT_PUBLIC_SPRING_BOOT_URL}/motorista/`} method="POST" className="flex flex-col gap-6 p-12 z-10 bg-white rounded-lg shadow-lg justify-center w-110">
                 <FieldGroup>
                     <div>
                         <h2 className="text-2xl mb-5 border-b-3 border-[#fdc426] w-max">Passageiro</h2>

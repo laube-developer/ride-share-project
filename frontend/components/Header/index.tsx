@@ -7,21 +7,47 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
+function MyBadge({children}: {children: React.ReactNode}) {
+  return (
+    <div className="border-2 border-slate-200 text-[.5rem] font-semibold px-1 py-0.5 rounded-md top-0 right-0 transform translate-x-1/2 -translate-y-1/2">
+      {children}
+    </div>
+  );
+}
+
 export default function Header() {
   const router = useRouter();
+
+  const comandos = {
+    irParaViagens: () => { router.push('/passageiro/minhas-viagens'); },
+    irParaDadosPessoais: () => { router.push('/motorista/dados-pessoais'); },
+    irParaMeiosDePagamento: () => { router.push('/motorista/meios-de-pagamento'); },
+    irParaAlterarSenha: () => { router.push('/motorista/alterar-senha'); },
+    irParaMinhasAvaliacoes: () => { router.push('/motorista/alterar-senha'); },
+    sair: () => { 
+      // Implementar lógica de logout aqui (ex: limpar tokens, chamar API de logout, etc.)
+      router.push('/'); 
+    }
+  }
 
   useEffect(() => {
     if (!window) return;
 
     window.onkeydown = function (e) {
-      if (e.ctrlKey && e.shiftKey && e.key === 'V') {
-        router.push('/passageiro/minhas-viagens');
+      if (e.ctrlKey && e.key === 'H') {
+        comandos.irParaViagens();
       };
-      if (e.shiftKey && e.key === 'P') {
-        router.push('/motorista/dados-pessoais');
+      if (e.ctrlKey && e.key === 'P') {
+        comandos.irParaDadosPessoais();
       };
-      if (e.shiftKey && e.key === 'P') {
-        router.push('/motorista/dados-pessoais');
+      if (e.ctrlKey && e.key === 'M') {
+        comandos.irParaMeiosDePagamento();
+      };
+      if (e.ctrlKey && e.key === 'S') {
+        comandos.irParaAlterarSenha();
+      };
+      if (e.ctrlKey && e.key === 'E') {
+        comandos.irParaMinhasAvaliacoes();
       };
     }
   }, []);
@@ -47,37 +73,38 @@ export default function Header() {
             </Avatar>
           </div>
         </DropdownMenuTrigger>
-        <DropdownMenuContent className="w-56" align="start">
+        <DropdownMenuContent className="w-64" align="start">
           <DropdownMenuLabel>Viagem</DropdownMenuLabel>
           <DropdownMenuGroup>
-            <DropdownMenuItem onClick={() => {router.push('/passageiro/minhas-viagens')}}>
+            <DropdownMenuItem onClick={comandos.irParaViagens}>
               Minhas viagens
-              <DropdownMenuShortcut>⇧⌘V</DropdownMenuShortcut>
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-          <DropdownMenuLabel>Conta</DropdownMenuLabel>
-          <DropdownMenuGroup>
-            <DropdownMenuItem onClick={() => {alert('Abrir dados pessoais.')}}>
-              Dados pessoais
-              <DropdownMenuShortcut>⇧⌘P</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              Meios de Pagamento
-              <DropdownMenuShortcut>⌘M</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              Alterar senha
-              <DropdownMenuShortcut>⇧⌘S</DropdownMenuShortcut>
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              Minhas Avaliações
-              <DropdownMenuShortcut>⌘A</DropdownMenuShortcut>
+              <DropdownMenuShortcut>⌘⇧H</DropdownMenuShortcut>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
+          <DropdownMenuLabel>Conta</DropdownMenuLabel>
+          <DropdownMenuGroup>
+            <DropdownMenuItem onClick={comandos.irParaDadosPessoais}>
+              Dados pessoais
+              <DropdownMenuShortcut>CTRL ⇧ P</DropdownMenuShortcut>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={comandos.irParaMeiosDePagamento}>
+              Meios de Pagamento
+              <DropdownMenuShortcut>CTRL ⇧ M</DropdownMenuShortcut>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={comandos.irParaAlterarSenha}>
+              Alterar senha
+              <DropdownMenuShortcut>CTRL ⇧ S</DropdownMenuShortcut>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={comandos.irParaMinhasAvaliacoes}>
+              Minhas Avaliações
+              <DropdownMenuShortcut>CTRL ⇧ E</DropdownMenuShortcut>
+            </DropdownMenuItem>
+          </DropdownMenuGroup>
+          <DropdownMenuSeparator />
+          <DropdownMenuItem onClick={comandos.sair}>
             Log out
-            <DropdownMenuShortcut>⇧⌘Q</DropdownMenuShortcut>
+            <DropdownMenuShortcut>CTRL ⇧ Q</DropdownMenuShortcut>
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

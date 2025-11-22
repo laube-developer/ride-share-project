@@ -1,16 +1,17 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { RefObject, useEffect, useRef } from "react";
 import { useMapsLibrary } from "@vis.gl/react-google-maps";
 
 interface Props {
   placeholder: string;
   onPlaceSelected: (place: google.maps.places.PlaceResult) => void;
   className?: string;
+  ref?: RefObject<HTMLInputElement | null>
 }
 
-export function AutocompleteInput({ placeholder, onPlaceSelected, className }: Props) {
-  const inputRef = useRef<HTMLInputElement | null>(null);
+export function AutocompleteInput({ placeholder, onPlaceSelected, className, ref}: Props) {
+  const inputRef = ref || useRef<HTMLInputElement | null>(null);
   const places = useMapsLibrary("places");
 
   useEffect(() => {

@@ -8,6 +8,7 @@ import RouteCalculator from '@/components/maps/RouteCalculator';
 import RoutePolyline from '@/components/maps/RoutePolyline.tsx';
 import {AdvancedMarker, APIProvider, Map} from '@vis.gl/react-google-maps';
 import { useEffect, useState } from 'react';
+import { FaMapMarkerAlt } from 'react-icons/fa';
 
 
 export default function ViagemPage() {
@@ -71,14 +72,21 @@ export default function ViagemPage() {
 
         {origem && (
           <AdvancedMarker position={{ lat: origem.lat, lng: origem.lng }}>
-            <div className="w-5 h-5 bg-green-600 border-3 border-white rounded-full shadow-lg" title="Origem" />
+            <div className='relative'>
+              <FaMapMarkerAlt color="blue" size={30}  />
+              <span className='absolute left-[100%] top-0 bg-blue-600 text-white font-bold py-1 px-2 rounded-md shadow-lg'>Origem</span>
+            </div>
           </AdvancedMarker>
         )}
 
         {destino && (
           <AdvancedMarker
             position={{ lat: destino.lat, lng: destino.lng }}>
-            <div className="w-5 h-5 bg-red-600 border-3 border-white rounded-full shadow-lg" title="Destino" />
+              <div>
+                <FaMapMarkerAlt color="red" size={30}  />
+                <span className='absolute left-[100%] top-0 bg-red-600 text-white font-bold py-1 px-2 rounded-md shadow-lg'>Destino</span>
+
+              </div>
           </AdvancedMarker>
         )}
 
