@@ -15,7 +15,6 @@ public class CartaoDeCredito extends MeioDePagamento {
 		this.validade = validade; 
 	}
 	
-	
 	public boolean processarPagamento(int valorParaPagar){
 		boolean processou=false;
 

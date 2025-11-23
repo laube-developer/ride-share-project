@@ -21,7 +21,6 @@ public class RideShareProject {
 	    		"00000000000",
 	    		"00000000000"
 				);
-		
 		return motorista.toString();
 	}
 
