@@ -2,6 +2,7 @@
 
 import Header from '@/components/Header';
 import InterfacePrincipal from '@/components/InterfacePrincipal';
+import DistanceCalculator from '@/components/maps/DistanceCalculator';
 import { LocalizacaoAtual } from '@/components/maps/LocalizacaoAtual';
 import MenuPassageiro from '@/components/maps/MenuPassageiro';
 import RouteCalculator from '@/components/maps/RouteCalculator';
@@ -17,7 +18,7 @@ export default function ViagemPage() {
   const [destino, setDestino] = useState<{ lat: number; lng: number } | null>(null);
   const [mostrarRota, setMostrarRota] = useState(false);
   const [rota, setRota] = useState<google.maps.LatLngLiteral[]>([]);
-
+  const [distancia, setDistancia] = useState<number | undefined>(undefined)
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -59,10 +60,17 @@ export default function ViagemPage() {
             onSelecionarOrigem={handleSelecionarOrigem}
             onSelecionarDestino={handleSelecionarDestino}
             onBuscarMotorista={() => setMostrarRota(true)}
+            distancia={distancia}
           />
         </InterfacePrincipal>
         <LocalizacaoAtual posicao={posicao} />
         
+        <DistanceCalculator
+          origem={origem}
+          destino={destino}
+          callback={setDistancia}
+        />
+
         <RouteCalculator
             origem={origem}
             destino={destino}

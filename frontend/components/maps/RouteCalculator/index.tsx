@@ -9,7 +9,7 @@ interface RouteCalculatorProps {
   setRota: (path: google.maps.LatLngLiteral[]) => void;
 }
 
-export default function RouteCalculator({ origem, destino, mostrarRota, setRota }: RouteCalculatorProps) {
+export default function RouteCalculator({ origem, destino, mostrarRota, setRota}: RouteCalculatorProps) {
   const routesLib = useMapsLibrary("routes"); 
   const map = useMap(); 
 
@@ -30,7 +30,7 @@ export default function RouteCalculator({ origem, destino, mostrarRota, setRota 
             lat: p.lat(),
             lng: p.lng(),
           }));
-          
+
           setRota(polyline);
 
           if (map) {
