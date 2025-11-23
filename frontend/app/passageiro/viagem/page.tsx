@@ -2,109 +2,102 @@
 
 import Header from '@/components/Header';
 import InterfacePrincipal from '@/components/InterfacePrincipal';
-import DistanceCalculator from '@/components/maps/DistanceCalculator';
+import DestinoMarker from '@/components/maps/DestinoMarker';
+import DistanceTimeCalculator from '@/components/maps/DistanceTimeCalculator';
+import DistanceCalculator from '@/components/maps/DistanceTimeCalculator';
 import { LocalizacaoAtual } from '@/components/maps/LocalizacaoAtual';
 import MenuPassageiro from '@/components/maps/MenuPassageiro';
+import OrigemMarker from '@/components/maps/OrigemMarker';
 import RouteCalculator from '@/components/maps/RouteCalculator';
 import RoutePolyline from '@/components/maps/RoutePolyline.tsx';
 import {AdvancedMarker, APIProvider, Map} from '@vis.gl/react-google-maps';
 import { useEffect, useState } from 'react';
 import { FaMapMarkerAlt } from 'react-icons/fa';
-
+import { FaLocationCrosshairs } from 'react-icons/fa6';
 
 export default function ViagemPage() {
-  const [posicao, setPosicao] = useState<{ lat: number; lng: number } | null>(null);
-  const [origem, setOrigem] = useState<{ lat: number; lng: number } | null>(null);
-  const [destino, setDestino] = useState<{ lat: number; lng: number } | null>(null);
-  const [mostrarRota, setMostrarRota] = useState(false);
-  const [rota, setRota] = useState<google.maps.LatLngLiteral[]>([]);
-  const [distancia, setDistancia] = useState<number | undefined>(undefined)
-
-  useEffect(() => {
-    navigator.geolocation.getCurrentPosition(
-      (loc) => {
-        setPosicao({
-          lat: loc.coords.latitude,
-          lng: loc.coords.longitude,
+    const [posicao, setPosicao] = useState<{ lat: number; lng: number; name?: string } | null>(null);
+    const [origem, setOrigem] = useState<{ lat: number; lng: number; name?: string } | null>(null);
+    const [destino, setDestino] = useState<{ lat: number; lng: number; name?: string } | null>(null);
+    const [mostrarRota, setMostrarRota] = useState(false);
+    const [rota, setRota] = useState<google.maps.LatLngLiteral[]>([]);
+    const [distancia, setDistancia] = useState<number | undefined>(undefined);
+    const [duracao, setDuracao] = useState<number | undefined>(undefined);
+    
+    const getPosicaoAtual = (callback: (pos: { lat: number; lng: number } | null) => void) => {
+        navigator.geolocation.getCurrentPosition(
+            (loc) => {
+                callback({
+                    lat: loc.coords.latitude,
+                    lng: loc.coords.longitude,
+                });
+            },
+            (err) => {
+                console.error("Erro ao obter localização:", err);
+                callback(null);
+            }
+        );
+    };
+    
+    useEffect(() => {
+        getPosicaoAtual((pos) => {
+            if (pos) setPosicao(pos);
         });
-      },
-      (err) => console.error("Erro ao obter localização:", err)
-    );
-  }, []);
-
-  const handleSelecionarOrigem = ({lat, lng}: {name?: string; lat: number; lng: number}) => {
-    setOrigem({ lat, lng });
-    setMostrarRota(false); 
-    setRota([]);
-  }
-
-  const handleSelecionarDestino = ({lat, lng}: {name?: string; lat: number; lng: number}) => {
-    setDestino({ lat, lng });
-    setMostrarRota(false);
-    setRota([]);
-  }
-
-  return (
-    <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
-      <Map
-        style={{width: '100vw', height: '100vh'}}
-        defaultCenter={posicao || {lat: 22.54992, lng: 0}}
+    }, []);
+    
+    const handleSelecionarOrigem = ({ lat, lng, name }: { name?: string; lat: number; lng: number }) => {
+        setOrigem({ lat, lng, name });
+        setMostrarRota(false);
+        setRota([]);
+    };
+    
+    const handleSelecionarDestino = ({ lat, lng, name }: { name?: string; lat: number; lng: number }) => {
+        setDestino({ lat, lng, name });
+        setMostrarRota(false);
+        setRota([]);
+    };
+    
+    return (
+        <div className="flex flex-col h-dvh relative">
+        
+        <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
+        <Header />
+        
+        <Map
+        style={{ width: "100vw", height: "100vh" }}
+        defaultCenter={posicao || { lat: 22.54992, lng: 0 }}
         defaultZoom={posicao ? 15 : 3}
-        gestureHandling='greedy'
+        gestureHandling="greedy"
         disableDefaultUI
         mapId={process.env.NEXT_PUBLIC_MAP_ID!}
-      >
+        className="relative h-full w-screen"
+        >
         <InterfacePrincipal>
-          <Header />
-          <MenuPassageiro
-            onSelecionarOrigem={handleSelecionarOrigem}
-            onSelecionarDestino={handleSelecionarDestino}
-            onBuscarMotorista={() => setMostrarRota(true)}
-            distancia={distancia}
-          />
+            
+        <MenuPassageiro
+        onSelecionarOrigem={handleSelecionarOrigem}
+        onSelecionarDestino={handleSelecionarDestino}
+        onBuscarMotorista={() => setMostrarRota(true)}
+        posicao={posicao}
+        distancia={distancia}
+        getPosicaoAtual={getPosicaoAtual}
+        />
         </InterfacePrincipal>
-        <LocalizacaoAtual posicao={posicao} />
         
-        <DistanceCalculator
-          origem={origem}
-          destino={destino}
-          callback={setDistancia}
-        />
-
-        <RouteCalculator
-            origem={origem}
-            destino={destino}
-            mostrarRota={mostrarRota}
-            setRota={setRota}
-        />
-
-        {origem && (
-          <AdvancedMarker position={{ lat: origem.lat, lng: origem.lng }}>
-            <div className='relative'>
-              <FaMapMarkerAlt color="blue" size={30}  />
-              <span className='absolute left-[100%] top-0 bg-blue-600 text-white font-bold py-1 px-2 rounded-md shadow-lg'>Origem</span>
-            </div>
-          </AdvancedMarker>
-        )}
-
-        {destino && (
-          <AdvancedMarker
-            position={{ lat: destino.lat, lng: destino.lng }}>
-              <div>
-                <FaMapMarkerAlt color="red" size={30}  />
-                <span className='absolute left-[100%] top-0 bg-red-600 text-white font-bold py-1 px-2 rounded-md shadow-lg'>Destino</span>
-
-              </div>
-          </AdvancedMarker>
-        )}
-
-        {/* COMPONENTE QUE DESENHA A ROTA (FILHO DE <Map>) */}
-        {rota.length > 0 && (
-          <RoutePolyline
-            path={rota}
-          />
-        )}
-      </Map>
-  </APIProvider>
-  );
+        {(posicao?.lat != origem?.lat && posicao?.lng != origem?.lng) && <LocalizacaoAtual posicao={posicao} />}
+        
+        
+        <DistanceTimeCalculator origem={origem} destino={destino} distanceCallback={setDistancia} durationCallback={setDuracao}/>
+        
+        <RouteCalculator origem={origem} destino={destino} mostrarRota={mostrarRota} setRota={setRota} />
+        
+        {origem && <OrigemMarker origem={origem}/>}
+        
+        {destino && <DestinoMarker destino={destino} duracao={duracao}/>}
+        
+        {rota.length > 0 && <RoutePolyline path={rota} />}
+        </Map>
+        </APIProvider>
+        </div>
+    );
 }

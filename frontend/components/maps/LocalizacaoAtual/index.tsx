@@ -16,14 +16,14 @@ export function LocalizacaoAtual({ posicao }: { posicao: { lat: number; lng: num
   if (!posicao) return null;
 
   return (
-    <AdvancedMarker position={posicao}>
+    <AdvancedMarker position={posicao} anchorTop="-50%">
       <div
         style={{
           width: 20,
           height: 20,
-          background: "red",
+          background: "#fdc426",
           borderRadius: "50%",
-          border: "2px solid white",
+          border: "4px solid black",
         }}
       />
     </AdvancedMarker>
