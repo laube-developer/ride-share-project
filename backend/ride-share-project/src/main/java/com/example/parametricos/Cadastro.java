@@ -52,7 +52,7 @@ public class Cadastro <T> {
 		
 	}
 	
-	public int getQuantidade() {
+	public int getTamanho() {
         return tamanho;
     }
 
