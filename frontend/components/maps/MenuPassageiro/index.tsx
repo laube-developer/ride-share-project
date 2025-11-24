@@ -31,7 +31,7 @@ import { useEffect, useRef, useState } from "react";
 import { AutocompleteInput } from "../AutocompleteInput";
 import { useMap } from "@vis.gl/react-google-maps";
 import { LuArrowLeft } from "react-icons/lu";
-import { FaCarSide } from "react-icons/fa";
+import { FaCarSide, FaCheck } from "react-icons/fa";
 import { GoKebabHorizontal } from "react-icons/go";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuGroup, DropdownMenuItem, DropdownMenuLabel, DropdownMenuPortal, DropdownMenuSeparator, DropdownMenuShortcut, DropdownMenuSub, DropdownMenuSubContent, DropdownMenuSubTrigger, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
@@ -74,8 +74,11 @@ export default function MenuPassageiro({ onSelecionarOrigem, onSelecionarDestino
         "destino" |
         "categoria" |
         "buscando motorista" |
-        "motorista a caminho"
-    >("origem");
+        "corrida" |
+        "pagamento" |
+        "processando pagamento" |
+        "pagamento realizado"
+    >("corrida");
     const [categoria, setCategoria] = useState<'comum' | 'luxo'>('luxo');
 
     const inputOrigemRef = useRef<HTMLInputElement | null>(null);
@@ -113,16 +116,36 @@ export default function MenuPassageiro({ onSelecionarOrigem, onSelecionarDestino
         'finalizada' |
         'cancelada'
 
-    >(null)
+    >('iniciada')
 
     useEffect(() => {
         if (statusCorrida == 'solicitada') {
             setTimeout(() => {
                 setStatusCorrida('aceita');
-                setAbaMenu('motorista a caminho')
+                setAbaMenu('corrida')
+                if (origem) {
+                    panTo({ lat: origem?.lat, lng: origem?.lng })
+                }
 
                 setTimeout(() => {
                     setStatusCorrida('motorista_chegou');
+
+                    setTimeout(() => {
+                        setStatusCorrida('iniciada');
+
+                        setTimeout(() => {
+                            setAbaMenu('pagamento')
+                            setStatusCorrida('finalizada');
+
+                            setTimeout(() => {
+                                setAbaMenu('processando pagamento')
+                                setAbaMenu('pagamento realizado')
+
+                            }, 3000)
+
+                        }, 3000)
+
+                    }, 3000)
                 }, 3000)
             }, 3000)
         }
@@ -133,6 +156,7 @@ export default function MenuPassageiro({ onSelecionarOrigem, onSelecionarDestino
             map.panTo({ lat: lat, lng: lng });
             map.setZoom(15);
         }
+
     }
 
     const handleUpdateOrigem = ({ name, lat, lng }: { name: string | undefined, lat: number, lng: number }) => {
@@ -195,8 +219,8 @@ export default function MenuPassageiro({ onSelecionarOrigem, onSelecionarDestino
     }
 
     return (
-        <div className="items-center flex justify-center">
-            <div className="bg-white bg-opacity-90 rounded-md shadow-xl p-4 z-20 w-[calc(100%-2rem)] md:w-96 lg:w-110 xl:w-120 2xl:w-140">
+        <div className="md:p-2 items-center flex justify-start">
+            <div className="bg-white bg-opacity-90 rounded-t-2xl md:rounded-2xl shadow-xl p-4 z-20 shadow-xl w-full md:w-96 lg:w-100 xl:w-110 2xl:w-120">
                 <FieldGroup className="flex flex-col">
 
                     {abaMenu == "origem" && <>
@@ -339,7 +363,7 @@ export default function MenuPassageiro({ onSelecionarOrigem, onSelecionarDestino
 
                     {abaMenu == "categoria" && <>
                         {destino && <div className="flex flex-col gap-2">
-                            <Item className={`${categoria == 'comum' && 'ring-2 ring-sky-600'}`} onClick={() => setCategoria('comum')}>
+                            <Item className={`${categoria == 'comum' && 'ring-2 ring-sky-600'} cursor-pointer`} onClick={() => setCategoria('comum')}>
                                 <ItemHeader>
                                     <ItemTitle>Sharing X</ItemTitle>
                                     <ItemDescription>Preços mais baixos</ItemDescription>
@@ -347,70 +371,14 @@ export default function MenuPassageiro({ onSelecionarOrigem, onSelecionarDestino
                                 </ItemHeader>
                             </Item>
 
-                            <Item className={`${categoria == 'luxo' && 'ring-3 ring-sky-600'} bg-gradient-to-br from-[#fceabb] via-[#f8d778] to-[#f59e0b]`} onClick={() => setCategoria('luxo')}>
+                            <Item className={`${categoria == 'luxo' && 'ring-3 ring-sky-600'} cursor-pointer bg-gradient-to-br from-[#fceabb] via-[#f8d778] to-[#f59e0b]`} onClick={() => setCategoria('luxo')}>
                                 <ItemHeader>
                                     <ItemTitle>Sharing Premium</ItemTitle>
                                     <ItemDescription>Mais conforto</ItemDescription>
-                                    <ItemActions><b>R$ {distancia ? (5 + distancia * 2).toFixed(2) : 'Calculando'}</b></ItemActions>
+                                    <ItemActions><b>R$ {distancia ? (5 + (distancia * 2)).toFixed(2) : 'Calculando'}</b></ItemActions>
                                 </ItemHeader>
                             </Item>
                         </div>}
-
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <div className="flex flex-start gap-3 justify-between items-center">
-                                    {formasDePagamento[formaAtualDePagamento].tipo == 'credito' && <>
-                                        <span
-                                            className="w-8 h-6 rounded-sm bg-black text-xs text-white flex items-center justify-center w-max px-2"
-                                        >Crédito</span>
-                                    </>
-                                    }
-                                    <div className="flex flex-row items-center gap-4">
-                                        <span>
-                                            {formasDePagamento[formaAtualDePagamento].nome}
-                                        </span>
-                                        <MdOutlineKeyboardArrowRight />
-                                    </div>
-                                </div>
-                                {/* <Card className="hover:bg-slate-100 cursor-pointer">
-                                    <CardContent>
-                                        
-                                    </CardContent>
-                                </Card> */}
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Selecione uma forma de pagamento:</AlertDialogTitle>
-                                </AlertDialogHeader>
-
-                                {formasDePagamento.map((forma, id) => (
-                                    <Card
-                                        key={id}
-                                        className={`hover:ring-2 hover:ring-slate-500 hover:bg-slate-100 cursor pointer cursor-pointer ${id == formaAtualDePagamento ? 'ring-2 !ring-sky-600' : ''}`}
-                                        onClick={() => setFormaPagamento(id)}
-                                    >
-                                        <CardHeader>
-                                            <CardTitle><Badge>{forma.nome}</Badge></CardTitle>
-                                            <CardDescription>{forma.descricao}</CardDescription>
-                                            <CardAction>
-                                                {forma.tipo == 'credito' && <Image
-                                                    alt="Cartão"
-                                                    width={60}
-                                                    height={60}
-                                                    src={'/card.svg'}
-                                                />}
-                                            </CardAction>
-                                        </CardHeader>
-                                    </Card>
-                                ))}
-
-
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
-                                    <AlertDialogAction className="cursor-pointer">Continue</AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
 
                         <Field className="self-end">
                             <Button
@@ -428,7 +396,7 @@ export default function MenuPassageiro({ onSelecionarOrigem, onSelecionarDestino
                                     inputDestinoRef.current?.focus();
 
                                 }}
-                                className="bg-[#fdc426] hover:bg-[#ffcb2c] text-black cursor-pointer">Buscar motorista</Button>
+                                className="bg-[#fdc426] hover:bg-[<Button variant='outline'>Mais informações</Button>] text-black cursor-pointer">Buscar motorista</Button>
                         </Field>
                     </>}
 
@@ -498,25 +466,34 @@ export default function MenuPassageiro({ onSelecionarOrigem, onSelecionarDestino
 
                     </>}
 
-                    {abaMenu == "motorista a caminho" && <>
+                    {abaMenu == "corrida" && <>
                         <div className="flex w-full flex-col gap-4 [--radius:1rem]">
-                            <div className="flex flex-row gap-4 justify-between">
-                                <Field orientation={'horizontal'} className="w-max">
+                            <div className="flex flex-row gap-4 justify-between h-max">
+                                <div className="line-clamp-1 text-md text-slate-500 !h-max w-full">
+                                    {statusCorrida == 'aceita' && <>
+                                        4 min  2,4 km
+                                    </>}
 
-                                    <ItemContent className="w-max">
-                                        <ItemTitle className="line-clamp-1 text-md text-slate-500 !h-max">
-                                            {statusCorrida == 'aceita' && <>
-                                                4 min  2,4 km
-                                            </>}
+                                    {statusCorrida == 'motorista_chegou' && <>
+                                        <span className="bg-blue-600 h-max text-white text-xs py-1 px-2 rounded-full">Motorista chegou ao local</span>
+                                    </>}
 
-                                            {statusCorrida == 'motorista_chegou' && <>
-                                                <Badge className="bg-blue-600 h-max">Motorista chegou ao local</Badge>
-                                            </>}
-                                        </ItemTitle>
-                                    </ItemContent>
-                                </Field>
+                                    {statusCorrida == 'iniciada' && <div className="w-full grid grid-cols-[auto_1fr] gap-2">
+                                        <span className="bg-green-600 h-max text-white text-xs py-1 px-2 rounded-full">Corrida Iniciada</span>
+                                        <Field className="w-full">
+                                            <ItemContent className="w-full gap-0 w-full overflow-x-hidden">
+                                                <div className="w-full flex animate-ride-car ">
+                                                    <FaCarSide />
+                                                </div>
+                                                <span className="border-b-2 border-black m-0 w-full"></span>
+                                            </ItemContent>
+
+                                        </Field>
+                                    </div>}
+                                </div>
 
                             </div>
+
 
                             <ItemContent className="w-full flex flex-row">
 
@@ -525,7 +502,7 @@ export default function MenuPassageiro({ onSelecionarOrigem, onSelecionarDestino
                                         <div
                                             className="text-2xl font-bold"
                                         >FHA-0E19</div>
-                                        <p className="font-bold">Chevrolet • Onix 1.4 • Prata</p>
+                                        <p className="font-bold">Chevrolet • Celta 1.0 • Prata</p>
                                         {distancia && <p>Distância total: <Badge>{distancia} km</Badge></p>}
 
                                     </div>
@@ -609,6 +586,96 @@ export default function MenuPassageiro({ onSelecionarOrigem, onSelecionarDestino
                         </div>
                     </>}
 
+                    {((abaMenu == "pagamento") || (abaMenu == "processando pagamento")) && <>
+                        <div className="grid grid-cols-[auto_6rem]">
+                            <div>
+                                <h1 className="text-xl font-bold">Corrida finalizada</h1>
+                                <p>Realize o pagamento</p>
+                            </div>
+                            <b className="text-right text-xl">R$ {distancia ? 5 + distancia * (categoria == "comum" ? 1 : 2) : 5}</b>
+                        </div>
+
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <div className="flex flex-start gap-3 justify-between items-center cursor-pointer bg-slate-100 h-15 p-2">
+                                    {formasDePagamento[formaAtualDePagamento].tipo == 'credito' && <>
+                                        <span
+                                            className="w-8 h-6 rounded-sm bg-black text-xs text-white flex items-center justify-center w-max px-2"
+                                        >Crédito</span>
+                                    </>
+                                    }
+                                    <div className="flex flex-row items-center gap-4">
+                                        <span>
+                                            {formasDePagamento[formaAtualDePagamento].nome}
+                                        </span>
+                                        <MdOutlineKeyboardArrowRight />
+                                    </div>
+                                </div>
+                                {/* <Card className="hover:bg-slate-100 cursor-pointer">
+                                    <CardContent>
+                                        
+                                    </CardContent>
+                                </Card> */}
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                                <AlertDialogHeader>
+                                    <AlertDialogTitle>Selecione uma forma de pagamento:</AlertDialogTitle>
+                                </AlertDialogHeader>
+
+                                {formasDePagamento.map((forma, id) => (
+                                    <Card
+                                        key={id}
+                                        className={`hover:ring-2 hover:ring-slate-500 hover:bg-slate-100 cursor pointer cursor-pointer ${id == formaAtualDePagamento ? 'ring-2 !ring-sky-600' : ''}`}
+                                        onClick={() => setFormaPagamento(id)}
+                                    >
+                                        <CardHeader>
+                                            <CardTitle><Badge>{forma.nome}</Badge></CardTitle>
+                                            <CardDescription>{forma.descricao}</CardDescription>
+                                            <CardAction>
+                                                {forma.tipo == 'credito' && <Image
+                                                    alt="Cartão"
+                                                    width={60}
+                                                    height={60}
+                                                    src={'/card.svg'}
+                                                />}
+                                            </CardAction>
+                                        </CardHeader>
+                                    </Card>
+                                ))}
+
+
+                                <AlertDialogFooter>
+                                    <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
+                                    <AlertDialogAction className="cursor-pointer">Continue</AlertDialogAction>
+                                </AlertDialogFooter>
+                            </AlertDialogContent>
+                        </AlertDialog>
+
+                        <Button
+                            className="bg-[#fdc426] hover:bg-[#ffcb2c] text-black cursor-pointer"
+                            disabled={abaMenu == "processando pagamento"}
+                            onClick={() => setAbaMenu("processando pagamento")}
+                        >
+                            {abaMenu == "pagamento" ? "Realizar Pagamento" : <Spinner />}
+                        </Button>
+                    </>}
+
+                    {abaMenu == "pagamento realizado" && <>
+                        <div className="flex items-center justify-center gap-4">
+                            <div>
+                                <h1 className="text-xl font-bold">Corrida finalizada</h1>
+                                <p>Pagamento Realizado</p>
+                            </div>
+                            <b className="bg-green-500 text-white p-2 rounded-md"><FaCheck /></b>
+                        </div>
+
+                        <Button
+                            className="hover:bg-[#ffcb2c] cursor-pointer"
+                            onClick={() => setAbaMenu("origem")}
+                        >
+                            Voltar para o início
+                        </Button>
+                    </>}
                 </FieldGroup>
 
             </div>

@@ -53,7 +53,7 @@ export default function ViagemPage() {
     
     const handleSelecionarDestino = ({ lat, lng, name }: { name?: string; lat: number; lng: number }) => {
         setDestino({ lat, lng, name });
-        setMostrarRota(false);
+        setMostrarRota(true);
         setRota([]);
     };
     
