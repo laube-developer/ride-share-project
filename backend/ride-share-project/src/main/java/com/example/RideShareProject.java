@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 // Importação de classes do projeto
-import main.java.com.example.entidades.Motorista;
+import com.example.entidades.Motorista;
 
 @RestController
 @SpringBootApplication
@@ -21,7 +21,6 @@ public class RideShareProject {
 	    		"00000000000",
 	    		"00000000000"
 				);
-		
 		return motorista.toString();
 	}
 

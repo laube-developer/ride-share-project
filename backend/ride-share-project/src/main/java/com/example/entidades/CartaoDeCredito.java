@@ -1,4 +1,4 @@
-package main.java.com.example.entidades;
+package com.example.entidades;
 import java.time.LocalDate;
 
 public class CartaoDeCredito extends MeioDePagamento {
@@ -14,7 +14,6 @@ public class CartaoDeCredito extends MeioDePagamento {
 		this.nomeTitular = nomeTitular;
 		this.validade = validade; 
 	}
-	
 	
 	public boolean processarPagamento(int valorParaPagar){
 		boolean processou=false;

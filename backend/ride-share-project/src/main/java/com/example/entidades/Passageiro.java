@@ -1,10 +1,11 @@
-package main.java.com.example.entidades;
+package com.example.entidades;
 
 import java.util.ArrayList;
+import com.example.parametricos.Cadastro;
 
 public class Passageiro extends Usuario{
 	
-	private ArrayList<MeioDePagamento> meioDePagamento;
+	private Cadastro<MeioDePagamento> meioDePagamento;
 	
 	public Passageiro(String nome, String email, String senha, String cpf, String telefone){
 		super(nome, email, senha, cpf, telefone);
@@ -15,25 +16,25 @@ public class Passageiro extends Usuario{
 		this.cpf = cpf;
 		this.telefone = telefone;
 		
-		meioDePagamento = new ArrayList<MeioDePagamento>(5); //limite do usuario 5 meios
+		meioDePagamento = new Cadastro<MeioDePagamento>(5); //limite do usuario 5 meios
 	}
 	
-	public ArrayList<MeioDePagamento> getMeiosDePagamento(){
+	public Cadastro<MeioDePagamento> getMeiosDePagamento(){
 		return meioDePagamento;
 	}
 	
 	public void cadastrarMeioDePagamento(MeioDePagamento meioDePagamentoAdicionar) {
-		if (meioDePagamento.size() == 5) {
+		if (meioDePagamento.getTamanho() == 5) {
 			System.out.println("Remova um meio de pagamento para adicionar outro. 5 meios já cadastrado!");
 			
 			return;
 		}
-		meioDePagamento.add(meioDePagamentoAdicionar);
+		meioDePagamento.adicionar(meioDePagamentoAdicionar);
 	}
 	
 	public void removerMeioDePagamento(MeioDePagamento meioDePagamentoRemover) {
 		int index = meioDePagamento.indexOf(meioDePagamentoRemover);
-		meioDePagamento.remove(index);
+		meioDePagamento.remover(index);
 		
 		System.out.println("Meio de pagamento cadastrado com sucesso!");
 	}

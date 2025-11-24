@@ -1,4 +1,4 @@
-package main.java.com.example.parametricos;
+package com.example.parametricos;
 
 public class Cadastro <T> {
 	
@@ -52,7 +52,7 @@ public class Cadastro <T> {
 		
 	}
 	
-	public int getQuantidade() {
+	public int getTamanho() {
         return tamanho;
     }
 
