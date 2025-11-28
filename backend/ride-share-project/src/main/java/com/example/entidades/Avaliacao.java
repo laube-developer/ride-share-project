@@ -1,4 +1,5 @@
 package com.example.entidades;
+
 import com.example.enums.NotaEnum;
 
 public class Avaliacao {
@@ -14,16 +15,16 @@ public class Avaliacao {
     }
 
     // Getters e Setters
-    public Usuario getUsuarioAvaliador(Usuario usuarioAvaliador) {
+    public Usuario getUsuarioAvaliador() {
         return usuarioAvaliador;
     }
 
-    public Usuario getUsuarioAvaliado(Usuario usuarioAvaliado) {
+    public Usuario getUsuarioAvaliado() {
         return usuarioAvaliado;
     }
     
     public NotaEnum getNota() {
-    		return nota;
+        return nota;
     }
 
 }

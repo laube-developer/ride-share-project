@@ -4,16 +4,16 @@ import com.example.entidades.Motorista;
 import com.example.enums.StatusMotoristaEnum;
 import com.example.examples.Operacao;
 import com.example.exceptions.MotoristaInvalidoException;
-//Nao sei se devo adicionar o UsuarioouSenhaIncorretosException aqui...
+import com.example.exceptions.UsuarioouSenhaIncorretosException;
 
 
 public class MotoristaController {
     private static final String NOME_OPERACAO = "ficar-online";
     
-    public static Operacao ficarOnline(Motorista motorista) {
+    public static Operacao ficarOnline(Motorista motorista) throws UsuarioouSenhaIncorretosException, MotoristaInvalidoException {
         try {
-            if (motorista == null) {
-                throw new MotoristaInvalidoException("Motorista nao informado.");
+            if (motorista == null || !motorista.verificarSenha(motorista.getSenha())) {
+                throw new UsuarioouSenhaIncorretosException("Motorista ou senha incorretos.");
             }
 
             boolean validadeCNH = motorista.getCNH() != null && motorista.getCNH().verificarValidade();
@@ -35,6 +35,13 @@ public class MotoristaController {
             return new Operacao(NOME_OPERACAO, true, "Motorista ficou online.");
 
         } catch (MotoristaInvalidoException e) {
+            return new Operacao(
+                NOME_OPERACAO,
+                false,
+                e.getMessage()
+            );
+
+        } catch (UsuarioouSenhaIncorretosException e) {
             return new Operacao(
                 NOME_OPERACAO,
                 false,

@@ -41,8 +41,12 @@ public class Usuario {
             this.email = email;
         }
 
-        public String setSenha() {
+        public String getSenha() {
         	return senha;
+        }
+
+        public void setSenha(String senha) {
+        	this.senha = senha;
         }
 
         public boolean verificarSenha(String senha) {
