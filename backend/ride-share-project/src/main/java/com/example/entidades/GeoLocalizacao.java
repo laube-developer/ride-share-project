@@ -16,7 +16,7 @@ public class GeoLocalizacao {
 		return longitude;
 	}
 	
-	public void setCoodenadas(double latitude, double longitude) {
+	private void setCoodenadas(double latitude, double longitude) {
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}

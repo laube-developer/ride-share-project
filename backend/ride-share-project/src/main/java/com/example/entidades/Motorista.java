@@ -61,10 +61,16 @@ public class Motorista extends Usuario {
     public StatusMotoristaEnum getStatus() {
         return status;
     }
+
+    public void setStatus(StatusMotoristaEnum status) {
+        this.status = status;
+    }
     
+    @Override
     public String toString() {
-    	return "Motorista: \n"+
-    			"    "+nome + "\n" +
+    	return """
+               Motorista: 
+                   """+nome + "\n" +
     			"    "+email + "\n" +
     			"    "+cpf + "\n" +
     			"    "+telefone + "\n";

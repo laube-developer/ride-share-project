@@ -1,31 +1,54 @@
+package com.example.examples;
+
 public class Operacao {
     private String nome;
     private boolean status = true;
-    private String mensagem = "Operação realizada com sucesso.";
+    private String mensagem = "Operacao realizada com sucesso.";
 
-    Operacao(, String nome, boolean status, String mensagem) {
+    public Operacao(String nome, boolean status, String mensagem) {
         this.nome = nome;
         this.status = status;
         this.mensagem = mensagem;
     }
 
-    public String json(){
-        return "{ "status": " + status + ", "mensagem": "" + mensagem + "" }";
-    };
-
-    public setNome(String nome) {
+    public Operacao(String nome) {
         this.nome = nome;
-        return this.nome;
     }
 
-    public boolean setStatus(boolean status) {
+    public String json() {
+        return String.format(
+            "{ \"nome\": \"%s\", \"status\": %s, \"mensagem\": \"%s\" }",
+            nome,
+            status,
+            mensagem
+        );
+    }
+
+    public Operacao setNome(String nome) {
+        this.nome = nome;
+        return this;
+    }
+
+    public Operacao setStatus(boolean status) {
         this.status = status;
-        return this.status;
+        return this;
     }
 
-    public String setMensagem(String mensagem) {
+    public Operacao setMensagem(String mensagem) {
         this.mensagem = mensagem;
-        return this.mensagem;
+        return this;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public boolean getStatus() {
+        return status;
+    }
+
+    public String getMensagem() {
+        return mensagem;
     }
 
 }
