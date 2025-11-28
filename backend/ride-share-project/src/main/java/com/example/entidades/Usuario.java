@@ -46,7 +46,7 @@ public class Usuario {
         }
 
         public boolean verificarSenha(String senha) {
-        		return this.senha == senha;
+        		return (null == this.senha ? senha == null : this.senha.equals(senha));
         }
         
         public float getAvaliacao() {

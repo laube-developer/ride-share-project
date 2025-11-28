@@ -1,5 +1,4 @@
 package com.example.entidades;
-
 import com.example.enums.NotaEnum;
 
 public class Avaliacao {
