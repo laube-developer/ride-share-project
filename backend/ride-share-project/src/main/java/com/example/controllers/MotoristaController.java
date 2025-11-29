@@ -8,7 +8,13 @@ import com.example.exceptions.UsuarioouSenhaIncorretosException;
 
 
 public class MotoristaController {
-    private static final String NOME_OPERACAO = "ficar-online";
+
+    private static final String OPERACAO_ONLINE = "ficar-online";
+    private static final String OPERACAO_OFFLINE = "ficar-offline";
+    private static final String OPERACAO_ACEITAR = "aceitar-corrida";
+    private static final String OPERACAO_INICIAR = "iniciar-corrida";
+    private static final String OPERACAO_CANCELAR = "cancelar-corrida";
+    private static final String OPERACAO_FINALIZAR = "finalizar-corrida";
     
     public static Operacao ficarOnline(Motorista motorista) throws UsuarioouSenhaIncorretosException, MotoristaInvalidoException {
         try {
@@ -32,25 +38,25 @@ public class MotoristaController {
             }
 
             motorista.setStatus(StatusMotoristaEnum.ONLINE);
-            return new Operacao(NOME_OPERACAO, true, "Motorista ficou online.");
+            return new Operacao(OPERACAO_ONLINE, true, "Motorista ficou online.");
 
         } catch (MotoristaInvalidoException e) {
             return new Operacao(
-                NOME_OPERACAO,
+                OPERACAO_ONLINE,
                 false,
                 e.getMessage()
             );
 
         } catch (UsuarioouSenhaIncorretosException e) {
             return new Operacao(
-                NOME_OPERACAO,
+                OPERACAO_ONLINE,
                 false,
                 e.getMessage()
             );
 
         } catch (Exception e) {
             return new Operacao(
-                NOME_OPERACAO,
+                OPERACAO_ONLINE,
                 false,
                 "Erro ao atualizar status do motorista para ONLINE."
             );
