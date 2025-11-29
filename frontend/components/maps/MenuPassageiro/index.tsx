@@ -57,7 +57,7 @@ export default function MenuPassageiro({
 
     const [origem, setOrigem] = useState<Localizacao>(null);
     const [destino, setDestino] = useState<Localizacao>(null);
-    const [abaMenu, setAbaMenu] = useState<AbaMenuPassageiro>("origem");
+    const [abaMenu, setAbaMenu] = useState<AbaMenuPassageiro>("pagamento");
     const [categoria, setCategoria] = useState<Categoria>('luxo');
 
     const inputOrigemRef = useRef<HTMLInputElement | null>(null);
@@ -146,6 +146,9 @@ export default function MenuPassageiro({
                         setStatusCorrida={setStatusCorrida}
                         onBuscarMotorista={onBuscarMotorista}
                         abaMenu={abaMenu}
+                        formasPagamento={formasDePagamento}
+                        indiceFormaPagamento={formaAtualDePagamento}
+                        setFormaPagamento={setFormaPagamento}
                     />
 
                     <AbaBuscaMotorista

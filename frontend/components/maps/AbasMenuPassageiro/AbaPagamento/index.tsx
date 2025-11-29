@@ -70,11 +70,6 @@ export default function AbaPagamento({
                         <MdOutlineKeyboardArrowRight />
                     </div>
                 </div>
-                {/* <Card className="hover:bg-slate-100 cursor-pointer">
-                                    <CardContent>
-                                        
-                                    </CardContent>
-                                </Card> */}
             </AlertDialogTrigger>
             <AlertDialogContent>
                 <AlertDialogHeader>
@@ -110,7 +105,7 @@ export default function AbaPagamento({
             </AlertDialogContent>
         </AlertDialog>
 
-                {statusPagamento}
+        {statusPagamento}
 
         <Button
             className="bg-[#fdc426] hover:bg-[#ffcb2c] text-black cursor-pointer"

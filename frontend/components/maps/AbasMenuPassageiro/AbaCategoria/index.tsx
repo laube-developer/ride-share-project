@@ -2,8 +2,13 @@ import { Field } from "@/components/ui/field";
 import { ItemActions, ItemDescription, ItemHeader, ItemTitle, Item } from "@/components/ui/item";
 import { Dispatch, SetStateAction } from "react";
 import { toast } from "sonner";
-import { AbaMenuPassageiro, Categoria, StatusCorrida } from "@/types/types";
+import { AbaMenuPassageiro, Categoria, FormaPagamento, StatusCorrida } from "@/types/types";
 import { Button } from "@/components/ui/button";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import { MdOutlineKeyboardArrowRight } from "react-icons/md";
+import { Card, CardAction, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import Image from "next/image";
 
 type AbaCategoriaProps = {
     open: boolean,
@@ -15,7 +20,10 @@ type AbaCategoriaProps = {
     distancia: number | undefined,
     setCategoria: Dispatch<SetStateAction<Categoria>>
     setStatusCorrida: Dispatch<SetStateAction<StatusCorrida>>
-    onBuscarMotorista?: (() => void) | undefined
+    onBuscarMotorista?: (() => void) | undefined;
+    formasPagamento: FormaPagamento[],
+    setFormaPagamento: (id: number) => void,
+    indiceFormaPagamento: number,
 }
 
 export default function AbaCategoria({
@@ -28,6 +36,9 @@ export default function AbaCategoria({
     destino,
     categoria,
     distancia,
+    formasPagamento,
+    setFormaPagamento,
+    indiceFormaPagamento,
 }: AbaCategoriaProps) {
     if (!open) return <></>
 
@@ -53,6 +64,57 @@ export default function AbaCategoria({
                 </ItemHeader>
             </Item>
         </div>
+
+        <AlertDialog>
+            <AlertDialogTrigger asChild>
+                <div className="flex flex-start gap-3 justify-between items-center cursor-pointer bg-slate-100 h-15 p-2">
+                    {formasPagamento[indiceFormaPagamento].tipo == 'credito' && <>
+                        <span
+                            className="w-8 h-6 rounded-sm bg-black text-xs text-white flex items-center justify-center w-max px-2"
+                        >Crédito</span>
+                    </>
+                    }
+                    <div className="flex flex-row items-center gap-4">
+                        <span>
+                            {formasPagamento[indiceFormaPagamento].nome}
+                        </span>
+                        <MdOutlineKeyboardArrowRight />
+                    </div>
+                </div>
+            </AlertDialogTrigger>
+            <AlertDialogContent>
+                <AlertDialogHeader>
+                    <AlertDialogTitle>Selecione uma forma de pagamento:</AlertDialogTitle>
+                </AlertDialogHeader>
+
+                {formasPagamento.map((forma, id) => (
+                    <Card
+                        key={id}
+                        className={`hover:ring-2 hover:ring-slate-500 hover:bg-slate-100 cursor pointer cursor-pointer ${id == indiceFormaPagamento ? 'ring-2 !ring-sky-600' : ''}`}
+                        onClick={() => setFormaPagamento(id)}
+                    >
+                        <CardHeader>
+                            <CardTitle><Badge>{forma.nome}</Badge></CardTitle>
+                            <CardDescription>{forma.descricao}</CardDescription>
+                            <CardAction>
+                                {forma.tipo == 'credito' && <Image
+                                    alt="Cartão"
+                                    width={60}
+                                    height={60}
+                                    src={'/card.svg'}
+                                />}
+                            </CardAction>
+                        </CardHeader>
+                    </Card>
+                ))}
+
+
+                <AlertDialogFooter>
+                    <AlertDialogCancel className="cursor-pointer">Cancel</AlertDialogCancel>
+                    <AlertDialogAction className="cursor-pointer">Continue</AlertDialogAction>
+                </AlertDialogFooter>
+            </AlertDialogContent>
+        </AlertDialog>
 
         <Field className="self-end">
             <Button

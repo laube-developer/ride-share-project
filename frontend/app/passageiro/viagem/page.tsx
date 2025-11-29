@@ -37,6 +37,8 @@ export default function ViagemPage() {
         );
     };
 
+    
+
     useEffect(() => {
         getPosicaoAtual((pos) => {
             if (pos) setPosicao(pos);
