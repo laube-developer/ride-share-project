@@ -1,7 +1,7 @@
-package main.java.com.example.entidades;
+package com.example.entidades;
 
-import main.java.com.example.enums.CategoriaCorridaEnum;
-import main.java.com.example.enums.StatusCorridaEnum;
+import com.example.enums.CategoriaCorridaEnum;
+import com.example.enums.StatusCorridaEnum;
 
 public class Corrida {
 	private GeoLocalizacao localPartida;

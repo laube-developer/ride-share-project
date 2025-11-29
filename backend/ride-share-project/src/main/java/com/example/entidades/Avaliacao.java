@@ -1,6 +1,5 @@
-package main.java.com.example.entidades;
-
-import main.java.com.example.enums.NotaEnum;
+package com.example.entidades;
+import com.example.enums.NotaEnum;
 
 public class Avaliacao {
     private Usuario usuarioAvaliador;

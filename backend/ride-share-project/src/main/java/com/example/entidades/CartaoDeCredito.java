@@ -1,11 +1,11 @@
-package main.java.com.example.entidades;
+package com.example.entidades;
 import java.time.LocalDate;
 
 public class CartaoDeCredito extends MeioDePagamento {
 	
-	private String numero;
-	private String nomeTitular;
-	private LocalDate validade; 
+	private final String numero;
+	private final String nomeTitular;
+	private final LocalDate validade; 
 	
 	public CartaoDeCredito(String numero, String nomeTitular, LocalDate validade, int limite) {
 		super("CartaoDeCredito", limite);
@@ -15,7 +15,7 @@ public class CartaoDeCredito extends MeioDePagamento {
 		this.validade = validade; 
 	}
 	
-	
+        @Override
 	public boolean processarPagamento(int valorParaPagar){
 		boolean processou=false;
 
@@ -37,8 +37,11 @@ public class CartaoDeCredito extends MeioDePagamento {
 		return processou;
 	}
 	
+        @Override
 	public void adicionarSaldo(int valor){
 		super.setSaldo(valor);
+		valor += getSaldo();
+		setSaldo(valor);
 		System.out.println("Valor adicionado com sucesso, seu novo limite restante: " + getSaldo() );
 	}
 

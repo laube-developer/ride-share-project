@@ -1,9 +1,9 @@
-package main.java.com.example.parametricos;
+package com.example.parametricos;
 
 public class Cadastro <T> {
 	
-	private Object[] lista;
-	private int tamanhoMax;
+	private final Object [] lista;
+	private final int tamanhoMax;
 	private int tamanho = 0;
 	
 	public Cadastro(int tamanho){
@@ -52,7 +52,7 @@ public class Cadastro <T> {
 		
 	}
 	
-	public int getQuantidade() {
+	public int getTamanho() {
         return tamanho;
     }
 

@@ -1,4 +1,4 @@
-package main.java.com.example.entidades;
+package com.example.entidades;
 
 import java.util.List;
 
@@ -46,7 +46,7 @@ public class Usuario {
         }
 
         public boolean verificarSenha(String senha) {
-        		return this.senha == senha;
+        		return (null == this.senha ? senha == null : this.senha.equals(senha));
         }
         
         public float getAvaliacao() {

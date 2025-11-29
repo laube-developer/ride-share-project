@@ -1,4 +1,4 @@
-package main.java.com.example.entidades;
+package com.example.entidades;
 
 public class GeoLocalizacao {
 	private double latitude;
@@ -16,7 +16,7 @@ public class GeoLocalizacao {
 		return longitude;
 	}
 	
-	public void setCoodenadas(double latitude, double longitude) {
+	private void setCoodenadas(double latitude, double longitude) {
 		this.latitude = latitude;
 		this.longitude = longitude;
 	}
