@@ -116,6 +116,7 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
@@ -123,46 +124,64 @@
 
 @theme {
   --animate-ride-car: ride-car 6s linear infinite;
+  --animate-line-trail: line-trail 2s cubic-bezier(.22, .9, .3, 1) infinite;
 
   @keyframes ride-car {
     0% {
       transform: translateX(-10%) translateY(0);
     }
 
-    /* Buraco leve */
     10% {
       transform: translateX(0%) translateY(-4%);
     }
+
     12% {
       transform: translateX(2%) translateY(0);
     }
 
-    /* Outro solavanco */
     25% {
       transform: translateX(15%) translateY(-3%);
     }
+
     27% {
       transform: translateX(17%) translateY(0);
     }
 
-    /* Pequena vibração */
     40% {
       transform: translateX(30%) translateY(-2%);
     }
+
     42% {
       transform: translateX(32%) translateY(0);
     }
 
-    /* Último buraco */
     70% {
       transform: translateX(60%) translateY(-5%);
     }
+
     72% {
       transform: translateX(62%) translateY(0);
     }
 
     100% {
       transform: translateX(110%) translateY(0);
+    }
+  }
+
+  @keyframes line-trail {
+
+    0% {
+      transform: translateY(100%) scaleY(0);
+    }
+
+
+    50% {
+      transform: translateY(100%) scaleY(1);
+    }
+
+
+    100% {
+      transform: translateY(-100%) scaleY(1);
     }
   }
 }

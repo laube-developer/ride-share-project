@@ -4,12 +4,15 @@ export type FormaPagamento = {
     descricao: string;
 }
 
-export type Motorista = {
+type Usuario = {
     nome: string,
     telefone?: string,
     avaliacoes?: number,
     img_url: string
 }
+export type Motorista = & Usuario;
+
+export type Passageiro = & Usuario;
 
 export type Geolocalizacao = {
     lat: number,
@@ -43,3 +46,5 @@ export type StatusCorrida =
     'cancelada'
 
     ;
+
+export type StatusMotorista = "online" | "offline" | "em_corrida" | "processando";

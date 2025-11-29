@@ -11,11 +11,11 @@ import {
 } from "@/components/ui/collapsible"
 import { MdOutlineKeyboardArrowUp } from "react-icons/md"
 
-export function AboveContent({children}:{children: React.ReactNode}){
-    return <>{children}</>
+export function AboveContent({ children }: { children: React.ReactNode }) {
+  return <>{children}</>
 }
 
-export function CollapsibleDemo({children, aboveContent}: {children?:React.ReactNode, aboveContent?: React.ReactNode}) {
+export function CollapsibleDemo({ children, aboveContent }: { children?: React.ReactNode, aboveContent?: React.ReactNode }) {
   const [isOpen, setIsOpen] = React.useState(false)
 
   return (
@@ -24,16 +24,15 @@ export function CollapsibleDemo({children, aboveContent}: {children?:React.React
       onOpenChange={setIsOpen}
       className="flex flex-col gap-2 w-full"
     >
-        
-      
-        <CollapsibleContent className="flex flex-col gap-2">
-            {aboveContent}
-        </CollapsibleContent>
 
-        <CollapsibleTrigger asChild className="cursor-pointer">
-            {children}
-            <MdOutlineKeyboardArrowUp />
-        </CollapsibleTrigger>
+
+      <CollapsibleContent className="flex flex-col gap-2">
+        {aboveContent}
+      </CollapsibleContent>
+
+      <CollapsibleTrigger asChild className="cursor-pointer">
+          {children}
+      </CollapsibleTrigger>
     </Collapsible>
   )
 }

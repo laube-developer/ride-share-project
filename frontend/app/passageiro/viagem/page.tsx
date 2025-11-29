@@ -4,17 +4,14 @@ import Header from '@/components/Header';
 import InterfacePrincipal from '@/components/InterfacePrincipal';
 import DestinoMarker from '@/components/maps/DestinoMarker';
 import DistanceTimeCalculator from '@/components/maps/DistanceTimeCalculator';
-import DistanceCalculator from '@/components/maps/DistanceTimeCalculator';
 import { LocalizacaoAtual } from '@/components/maps/LocalizacaoAtual';
 import MenuPassageiro from '@/components/maps/MenuPassageiro';
 import OrigemMarker from '@/components/maps/OrigemMarker';
 import RouteCalculator from '@/components/maps/RouteCalculator';
 import RoutePolyline from '@/components/maps/RoutePolyline.tsx';
 import { Localizacao } from '@/types/types';
-import { AdvancedMarker, APIProvider, Map } from '@vis.gl/react-google-maps';
+import { APIProvider, Map } from '@vis.gl/react-google-maps';
 import { useEffect, useState } from 'react';
-import { FaMapMarkerAlt } from 'react-icons/fa';
-import { FaLocationCrosshairs } from 'react-icons/fa6';
 
 export default function ViagemPage() {
     const [posicao, setPosicao] = useState<{ lat: number; lng: number; name?: string } | null>(null);

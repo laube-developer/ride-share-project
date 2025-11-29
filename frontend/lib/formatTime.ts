@@ -33,3 +33,4 @@ export const formatarSegundos = (
     text: "min",
   };
 };
+

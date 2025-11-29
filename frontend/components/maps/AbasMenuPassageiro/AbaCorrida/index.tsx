@@ -10,6 +10,7 @@ import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { CollapsibleDemo } from "@/components/CollapsibleDemo";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
+import CancelarCorridaMenu from "../../CancelarCorridaMenu";
 
 type AbaCorridaProps = {
     open: boolean,
@@ -113,7 +114,7 @@ export default function AbaCorrida({
 
 
             <CollapsibleDemo
-                
+
                 aboveContent={(
                     <div className="flex flex-col gap-10 pt-5">
                         <div>
@@ -124,31 +125,11 @@ export default function AbaCorrida({
                             <h1><b>Destino</b></h1>
                             {destino?.name}
                         </div>
-                        <AlertDialog>
-                            <AlertDialogTrigger asChild>
-                                <Button className="w-full bg-red-500 hover:bg-red-400 cursor-pointer">
-                                    Cancelar Corrida
-                                </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                                <AlertDialogHeader>
-                                    <AlertDialogTitle>Tem certeza que deseja cancelar a corrida?</AlertDialogTitle>
-                                    <AlertDialogDescription>
-                                        A solicitação da corrida será cancelada.
-                                        Caso solicite uma nova corrida, o preço pode ser alterado.
-                                    </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                    <AlertDialogCancel>Voltar</AlertDialogCancel>
-                                    <AlertDialogAction
-                                        className="bg-red-500 hover:bg-red-400 cursor-pointer"
-                                        onClick={cancelarCorrida}
-                                    >
-                                        Cancelar corrida
-                                    </AlertDialogAction>
-                                </AlertDialogFooter>
-                            </AlertDialogContent>
-                        </AlertDialog>
+
+                        <CancelarCorridaMenu
+                            cancelarCorrida={cancelarCorrida}
+                        />
+                        
                     </div>
                 )}
             >
