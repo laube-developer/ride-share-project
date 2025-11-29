@@ -15,15 +15,17 @@ function MyBadge({children}: {children: React.ReactNode}) {
   );
 }
 
-export default function Header() {
+export default function HeaderMotorista() {
   const router = useRouter();
 
   const comandos = {
-    irParaViagens: () => { router.push('/passageiro/minhas-viagens'); },
-    irParaDadosPessoais: () => { router.push('/passageiro/dados-pessoais'); },
-    irParaMeiosDePagamento: () => { router.push('/passageiro/meios-de-pagamento'); },
-    irParaAlterarSenha: () => { router.push('/passageiro/alterar-senha'); },
-    irParaMinhasAvaliacoes: () => { router.push('/passageiro/avaliacoes'); },
+    irParaCorridas: () => { router.push('/motorista/corrida'); },
+    irParaHistórico: () => {router.push('/motorista/historico')},
+    irParaDadosPessoais: () => { router.push('/motorista/dados-pessoais'); },
+    irParaSaldo: () => { router.push('/motorista/meios-de-pagamento'); },
+    irParaAlterarSenha: () => { router.push('/motorista/alterar-senha'); },
+    irParaMinhasAvaliacoes: () => { router.push('/motorista/alterar-senha'); },
+    
     sair: () => { 
       // Implementar lógica de logout aqui (ex: limpar tokens, chamar API de logout, etc.)
       router.push('/'); 
@@ -35,13 +37,13 @@ export default function Header() {
 
     window.onkeydown = function (e) {
       if (e.ctrlKey && e.key === 'H') {
-        comandos.irParaViagens();
+        comandos.irParaCorridas();
       };
       if (e.ctrlKey && e.key === 'P') {
         comandos.irParaDadosPessoais();
       };
       if (e.ctrlKey && e.key === 'M') {
-        comandos.irParaMeiosDePagamento();
+        comandos.irParaSaldo();
       };
       if (e.ctrlKey && e.key === 'S') {
         comandos.irParaAlterarSenha();
@@ -74,22 +76,26 @@ export default function Header() {
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-64" align="start">
-          <DropdownMenuLabel>Viagem</DropdownMenuLabel>
+          <DropdownMenuLabel className="font-bold">Corridas</DropdownMenuLabel>
           <DropdownMenuGroup>
-            <DropdownMenuItem onClick={comandos.irParaViagens}>
-              Minhas viagens
+            <DropdownMenuItem onClick={comandos.irParaCorridas}>
+              Corrida
+              <DropdownMenuShortcut>⌘⇧H</DropdownMenuShortcut>
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={comandos.irParaHistórico}>
+              Histórico
               <DropdownMenuShortcut>⌘⇧H</DropdownMenuShortcut>
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuLabel>Conta</DropdownMenuLabel>
+          <DropdownMenuLabel  className="font-bold">Conta</DropdownMenuLabel>
           <DropdownMenuGroup>
             <DropdownMenuItem onClick={comandos.irParaDadosPessoais}>
               Dados pessoais
               <DropdownMenuShortcut>CTRL ⇧ P</DropdownMenuShortcut>
             </DropdownMenuItem>
-            <DropdownMenuItem onClick={comandos.irParaMeiosDePagamento}>
-              Meios de Pagamento
+            <DropdownMenuItem onClick={comandos.irParaSaldo}>
+              Saldo
               <DropdownMenuShortcut>CTRL ⇧ M</DropdownMenuShortcut>
             </DropdownMenuItem>
             <DropdownMenuItem onClick={comandos.irParaAlterarSenha}>

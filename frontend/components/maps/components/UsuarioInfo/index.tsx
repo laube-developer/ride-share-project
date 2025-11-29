@@ -4,14 +4,15 @@ import { Motorista, Passageiro } from "@/types/types";
 import { FaStar } from "react-icons/fa";
 
 type UsuarioInfoProps = {
-    usuario: Motorista | Passageiro;
+    usuario: Motorista | Passageiro | undefined;
     badge?: string;
     badgeSize?: "xl" | "lg";
-    descricao?: string
+    descricao?: string;
+    className?: string;
 }
 
-export default function UsuarioInfo({ usuario, badge, badgeSize }: UsuarioInfoProps ) {
-    return <div>
+export default function UsuarioInfo({ usuario, badge, badgeSize, className }: UsuarioInfoProps ) {
+    return <div className={className ?? ""}>
         <div className="flex justify-start gap-4">
             <Avatar className="w-10 h-10" >
                 <AvatarImage src="https://github.com/laube-developer.png" />

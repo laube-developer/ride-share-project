@@ -1,6 +1,7 @@
 "use client"
 
 import Header from '@/components/Header';
+import HeaderMotorista from '@/components/HeaderMotorista';
 import InterfacePrincipal from '@/components/InterfacePrincipal';
 import DestinoMarker from '@/components/maps/DestinoMarker';
 import DistanceTimeCalculator from '@/components/maps/DistanceTimeCalculator';
@@ -12,12 +13,15 @@ import OrigemMarker from '@/components/maps/OrigemMarker';
 import PassageiroMarker from '@/components/maps/PassageiroMarker';
 import RouteCalculator from '@/components/maps/RouteCalculator';
 import RoutePolyline from '@/components/maps/RoutePolyline.tsx';
-import { Localizacao, StatusCorrida } from '@/types/types';
+import { Localizacao, StatusCorrida, StatusMotorista } from '@/types/types';
+import { panTo } from '@/util/googleApiMethods';
 import { APIProvider, Map } from '@vis.gl/react-google-maps';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 export type OperacoesMotorista =
+    "ficarOnline" |
+    "ficarOffline" |
     "aceitarCorrida" |
     "seguirAtePassageiro" |
     "iniciarCorrida" |
@@ -53,6 +57,8 @@ export default function CorridaPage() {
     const [statusCorridaAtual, setStatusCorridaAtual] = useState<StatusCorrida | null>("solicitada")
     const [statusProximaCorrida, setStatusProximaCorrida] = useState<StatusCorrida | null>(null)
 
+    const [statusMotorista, setStatusMotorista] = useState<StatusMotorista>("online");
+
     const getPosicaoAtual = (callback: (pos: { lat: number; lng: number } | null) => void) => {
         navigator.geolocation.getCurrentPosition(
             (loc) => {
@@ -69,9 +75,13 @@ export default function CorridaPage() {
     };
 
     useEffect(() => {
-        getPosicaoAtual((pos) => {
-            if (pos) setPosicao(pos);
-        });
+        const interval = setInterval(() => {
+            getPosicaoAtual((pos) => {
+                if (pos) setPosicao(pos);
+            });
+        }, 1000)
+
+        return () => clearInterval(interval)
     }, []);
 
 
@@ -85,32 +95,67 @@ export default function CorridaPage() {
         setRota([]);
     };
 
-    const operacoes: Record<OperacoesMotorista, (attr: any) => void> = {
+    const operacoes: Record<OperacoesMotorista, (attr?: any) => void> = {
+        ficarOnline: () => {
+            setStatusMotorista("processando");
+            setTimeout(() => (setStatusMotorista("online")), 2000);
+        },
+
+        ficarOffline: () => {
+            setStatusMotorista("processando");
+            setTimeout(() => (setStatusMotorista("offline")), 2000);
+        },
+
         aceitarCorrida: () => {
             //aceitar corrida no backend e esperar a resposta
             //caso autorizado
 
             setMostrarRotaAtePassageiro(false)
+            setRotaAtePassageiro([])
+
             setMostrarRota(true)
             setStatusCorridaAtual("aceita")
         },
         seguirAtePassageiro: () => {
             setMostrarRota(false)
+            setRota([])
             setMostrarRotaAtePassageiro(true)
         },
         iniciarCorrida: () => {
             setMostrarRota(true)
             setMostrarRotaAtePassageiro(false)
+            setRotaAtePassageiro([])
+            setStatusCorridaAtual("iniciada")
         },
         cancelarCorrida: () => {
-            setStatusCorridaAtual(null)
+            setStatusCorridaAtual("cancelada")
             toast("Corrida cancelada")
         },
-        finalizarCorrida: () => {
+        finalizarCorrida: (map: google.maps.Map | null) => {
             setStatusCorridaAtual("finalizada")
+            setRota([])
+            setOrigem(null)
+
+
+            if (destino?.lat && destino?.lng && map) {
+                panTo(
+                    { lat: destino?.lat, lng: destino?.lng },
+                    map,
+                    15
+                )
+            }
         },
-        confirmarPagamento: () => {
-            
+        confirmarPagamento: (map: google.maps.Map | null) => {
+            setDestino(null)
+            setStatusCorridaAtual(null)
+
+            if (posicao?.lat && posicao?.lng && map) {
+                panTo(
+                    { lat: posicao?.lat, lng: posicao?.lng },
+                    map,
+                    15
+                )
+            }
         },
         registrarPendencia: (x: number) => {
 
@@ -121,8 +166,8 @@ export default function CorridaPage() {
     return (
         <div className="flex flex-col h-dvh relative">
 
-            <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
-                <Header />
+            <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!} libraries={["routes"]}>
+                <HeaderMotorista />
 
                 <Map
                     style={{ width: "100vw", height: "100vh" }}
@@ -145,7 +190,9 @@ export default function CorridaPage() {
                             operacoes={operacoes}
                             duracaoAtePassageiro={duracaoAtePassageiro}
                             distanciaAtePassageiro={distanciaAtePassageiro}
+                            statusMotorista={statusMotorista}
                         />
+
                     </InterfacePrincipal>
 
                     <DistanceTimeCalculator origem={origem} destino={destino} distanceCallback={setDistancia} durationCallback={setDuracao} />
@@ -157,10 +204,10 @@ export default function CorridaPage() {
                     {rotaAtePassageiro.length > 0 && <RoutePolyline path={rotaAtePassageiro} color="#fdc426" />}
 
 
-                    {posicao && <MotoristaMarker origem={posicao} />}
-                    {origem && <PassageiroMarker origem={origem} />}
+                    {posicao && statusCorridaAtual != "finalizada" && <MotoristaMarker origem={posicao} showPulse={!statusCorridaAtual && statusMotorista == "online"} />}
+                    {origem && statusCorridaAtual == "iniciada" && <OrigemMarker origem={origem} />}
+                    {origem && statusCorridaAtual == "aceita" && <PassageiroMarker origem={origem} />}
                     {destino && <DestinoMarker destino={destino} duracao={duracao} />}
-
 
                 </Map>
             </APIProvider>

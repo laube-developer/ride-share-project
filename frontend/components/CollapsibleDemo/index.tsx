@@ -1,37 +1,32 @@
+// Collapsible
 "use client"
 
 import * as React from "react"
-import { ChevronsUpDown } from "lucide-react"
-
-import { Button } from "@/components/ui/button"
-import {
-  Collapsible,
-  CollapsibleContent,
-  CollapsibleTrigger,
-} from "@/components/ui/collapsible"
-import { MdOutlineKeyboardArrowUp } from "react-icons/md"
-
-export function AboveContent({ children }: { children: React.ReactNode }) {
-  return <>{children}</>
-}
+import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 
 export function CollapsibleDemo({ children, aboveContent }: { children?: React.ReactNode, aboveContent?: React.ReactNode }) {
-  const [isOpen, setIsOpen] = React.useState(false)
-
   return (
-    <Collapsible
-      open={isOpen}
-      onOpenChange={setIsOpen}
-      className="flex flex-col gap-2 w-full"
-    >
-
-
-      <CollapsibleContent className="flex flex-col gap-2">
+    <Collapsible className="w-full flex flex-col gap-2">
+      <CollapsibleContent
+        className="
+          px-2
+          w-full
+          overflow-hidden
+          
+          // Aplica a transição
+          transition-[height] // Define o que será animado
+          duration-300 // Define a velocidade
+          ease-in-out // Define a curva
+          
+          // Aplica a nova classe simplificada
+          collapsible-height-transition // <-- CLASSE ÚNICA APLICADA
+        "
+      >
         {aboveContent}
       </CollapsibleContent>
 
       <CollapsibleTrigger asChild className="cursor-pointer">
-          {children}
+        {children}
       </CollapsibleTrigger>
     </Collapsible>
   )

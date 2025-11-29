@@ -8,6 +8,7 @@ import { CollapsibleDemo } from "@/components/CollapsibleDemo";
 import UsuarioInfo from "../../components/UsuarioInfo";
 import { formatarSegundos } from "@/lib/formatTime";
 import { calcularPreco } from "@/lib/calcularPreco";
+import { useMap } from "@vis.gl/react-google-maps";
 
 type AbaCorridaIniciadaProps = {
     open?: boolean;
@@ -19,8 +20,6 @@ type AbaCorridaIniciadaProps = {
     categoria: Categoria;
     finalizarCorrida: () => void;
     cancelarCorrida: () => void
-    registrarPendencia: (x:number) => void
-    confirmarPagamento: () => void
 }
 
 export default function AbaCorridaIniciada({
@@ -33,8 +32,6 @@ export default function AbaCorridaIniciada({
     categoria,
     cancelarCorrida,
     finalizarCorrida,
-    registrarPendencia,
-    confirmarPagamento
 }: AbaCorridaIniciadaProps) {
     if (!open) return <></>
 
@@ -43,9 +40,7 @@ export default function AbaCorridaIniciada({
 
     return <div className="flex flex-col gap-2">
 
-        <h1 className="text-xl font-bold">Total:</h1>
-
-        {/* Informações da corrida */}
+        <h1 className="text-xl font-bold">Corrida em andamento</h1>
 
         <UsuarioInfo
             usuario={passageiro}
@@ -61,7 +56,7 @@ export default function AbaCorridaIniciada({
 
             <div className="grid grid-cols-[1rem_auto] gap-2 p-0">
                 <div className="w-full flex items-center justify-center overflow-hidden">
-                    <span className={`w-[.40rem] h-7 bg-[#fdc426] animate-line-trail`}></span>
+                    <span className={`w-[.40rem] h-7 bg-black animate-line-trail`}></span>
 
                 </div>
             </div>
@@ -85,7 +80,7 @@ export default function AbaCorridaIniciada({
             <Button variant='outline' className="w-full">Mais opções</Button>
         </CollapsibleDemo>
 
-        <Button onClick={()=>registrarPendencia(calcularPreco(distancia, categoria))}>Passageiro não pagou</Button>
-        <Button onClick={confirmarPagamento}>Confirmar Pagamento</Button>
+
+        <Button onClick={finalizarCorrida}>Finalizar corrida</Button>
     </div>
 }

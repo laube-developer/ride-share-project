@@ -7,8 +7,6 @@ import { useMap } from "@vis.gl/react-google-maps";
 
 import { toast } from "sonner"
 
-import AbaCorrida from "../AbasMenuPassageiro/AbaCorrida";
-import AbaReceberPagamento from "../AbasMenuPassageiro/AbaPagamento";
 
 import { AbaMenuPassageiro, Categoria, FormaPagamento, Geolocalizacao, Localizacao, Motorista, PagamentoStatus, Passageiro, StatusCorrida, StatusMotorista } from "@/types/types";
 import { handleUpdateDestino, handleUpdateOrigem } from "@/util/googleApiMethods";
@@ -17,6 +15,7 @@ import AbaRecebendoCorrida from "../AbasMenuMotorista/AbaRecebendoCorrida";
 import { OperacoesMotorista } from "@/app/motorista/corrida/page";
 import AbaCorridaAceita from "../AbasMenuMotorista/AbaCorridaAceita";
 import AbaCorridaIniciada from "../AbasMenuMotorista/AbaCorridaIniciada";
+import AbaReceberPagamento from "../AbasMenuMotorista/AbaReceberPagamento";
 
 type MenuMotoristaProps = {
     origem: Localizacao;
@@ -25,9 +24,10 @@ type MenuMotoristaProps = {
     duracao: number | undefined;
     statusCorridaAtual: StatusCorrida
     statusProximaCorrida: StatusCorrida | null,
-    operacoes: Record<OperacoesMotorista, () => void>
+    operacoes: Record<OperacoesMotorista, (attr?: any) => void>
     duracaoAtePassageiro: number | undefined;
     distanciaAtePassageiro: number | undefined;
+    statusMotorista: StatusMotorista;
 };
 
 const motorista: Motorista = {
@@ -63,21 +63,11 @@ export default function MenuPassageiro({
     operacoes,
     distanciaAtePassageiro,
     duracaoAtePassageiro,
+    statusMotorista,
 
 }: MenuMotoristaProps) {
     const [abaMenu, setAbaMenu] = useState<AbaMenuMotorista>("principal");
-    const [statusMotorista, setStatusMotorista] = useState<StatusMotorista>("online");
     const [recebendoCorrida, setRecebendoCorrida] = useState(true)
-
-    const ficarOnline = () => {
-        setStatusMotorista("processando");
-        setTimeout(() => (setStatusMotorista("online")), 2000);
-    }
-
-    const ficarOffline = () => {
-        setStatusMotorista("processando");
-        setTimeout(() => (setStatusMotorista("offline")), 2000);
-    }
 
     const map = useMap();
 
@@ -88,8 +78,8 @@ export default function MenuPassageiro({
                     <AbaPrincipal
                         open={abaMenu == "principal"}
                         statusMotorista={statusMotorista}
-                        ficarOnline={ficarOnline}
-                        ficarOffline={ficarOffline}
+                        ficarOnline={operacoes.ficarOnline}
+                        ficarOffline={operacoes.ficarOffline}
                         motorista={motorista}
                     />
 
@@ -128,7 +118,7 @@ export default function MenuPassageiro({
                     <AbaCorridaIniciada
                         open={abaMenu == "corrida iniciada"}
                         finalizarCorrida={() => {
-                            operacoes.finalizarCorrida()
+                            operacoes.finalizarCorrida(map)
                             setAbaMenu("pagamento")
                         }}
                         cancelarCorrida={operacoes.cancelarCorrida}
@@ -137,6 +127,18 @@ export default function MenuPassageiro({
                         passageiro={passageiro}
                         distancia={distancia}
                         duracao={duracao}
+                        categoria="luxo"
+                    />
+
+                    <AbaReceberPagamento
+                        open={abaMenu == "pagamento"}
+                        confirmarPagamento={() => {
+                            operacoes.confirmarPagamento(map)
+                            setAbaMenu("principal")
+                        }}
+                        registrarPendencia={operacoes.registrarPendencia}
+                        distancia={distancia}
+                        categoria="luxo"
                     />
 
                 </FieldGroup>
