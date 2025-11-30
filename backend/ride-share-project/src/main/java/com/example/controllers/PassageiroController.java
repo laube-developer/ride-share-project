@@ -3,11 +3,15 @@ package com.example.controllers;
 import com.example.entidades.Passageiro;
 import com.example.enums.StatusCorridaEnum;
 import com.example.exceptions.EstadoInvalidoException;
-import com.example.examples.Operacao;
+import com.example.examples.Resposta;
 import com.example.exceptions.PassageiroInvalidoException;
 import com.example.exceptions.SaldoInsuficienteException;
+import com.example.exceptions.UsuarioOuSenhaIncorretosException;
+import com.example.parametricos.Cadastro;
 import com.example.exceptions.PagamentoPendenteException;
+import com.example.entidades.CadastroAutenticavel;
 import com.example.entidades.Corrida;
+import com.example.entidades.CredenciaisLogin;
 import com.example.exceptions.MetodoPagamentoInexistenteException;
 import com.example.entidades.MeioDePagamento;
 
@@ -20,7 +24,7 @@ import ch.qos.logback.core.status.Status;
 public class PassageiroController {
     private static final String NOME_OPERACAO = "ficar-disponivel";
 
-    public static Operacao processarPagamento(MeioDePagamento meioPadrao, Corrida corrida, Passageiro passageiro, int valorParaPagar, int saldo) throws SaldoInsuficienteException, PagamentoPendenteException, PassageiroInvalidoException, EstadoInvalidoException, MetodoPagamentoInexistenteException {
+    public static Resposta processarPagamento(MeioDePagamento meioPadrao, Corrida corrida, Passageiro passageiro, int valorParaPagar, int saldo) throws SaldoInsuficienteException, PagamentoPendenteException, PassageiroInvalidoException, EstadoInvalidoException, MetodoPagamentoInexistenteException {
         try {
             if (passageiro == null) {
                 throw new PassageiroInvalidoException("Passageiro nao informado.");            
@@ -51,17 +55,33 @@ public class PassageiroController {
                 throw new PassageiroInvalidoException("Cadastre pelo menos um meio de pagamento.");
             }
             // If all checks pass, return a successful Operacao
-            return new Operacao(NOME_OPERACAO, true, "Passageiro ficou disponível com sucesso.");
+            return new Resposta(NOME_OPERACAO, true, "Passageiro ficou disponível com sucesso.");
         } catch (PassageiroInvalidoException e) {
-            return new Operacao(NOME_OPERACAO, false, e.getMessage());
+            return new Resposta(NOME_OPERACAO, false, e.getMessage());
         } catch (PagamentoPendenteException e) {
-            return new Operacao(NOME_OPERACAO, false, "Erro ao atualizar status do passageiro.");
+            return new Resposta(NOME_OPERACAO, false, "Erro ao atualizar status do passageiro.");
         } catch (SaldoInsuficienteException e) {
-            return new Operacao(NOME_OPERACAO, false, "Erro ao atualizar status do passageiro.");
+            return new Resposta(NOME_OPERACAO, false, "Erro ao atualizar status do passageiro.");
         } catch (MetodoPagamentoInexistenteException e) {
-            return new Operacao(NOME_OPERACAO, false, "Erro ao atualizar status do passageiro.");
+            return new Resposta(NOME_OPERACAO, false, "Erro ao atualizar status do passageiro.");
         } catch (EstadoInvalidoException e) {
-            return new Operacao(NOME_OPERACAO, false, "Erro ao atualizar status do passageiro.");
+            return new Resposta(NOME_OPERACAO, false, "Erro ao atualizar status do passageiro.");
         }
+    }
+
+    public static Passageiro login(
+
+        CredenciaisLogin credenciais,
+        CadastroAutenticavel<Passageiro> cadastro
+
+    ) throws UsuarioOuSenhaIncorretosException{
+
+        Passageiro p = cadastro.buscarPorEmail(credenciais.getEmail());
+        if (p == null) throw new UsuarioOuSenhaIncorretosException();
+
+        boolean senhaValida = p.verificarSenha(credenciais.getSenha());
+        if (!senhaValida) throw new UsuarioOuSenhaIncorretosException();
+
+        return p;
     }
 }

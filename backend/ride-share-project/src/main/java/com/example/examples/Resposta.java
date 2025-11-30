@@ -1,46 +1,50 @@
 package com.example.examples;
 
-public class Operacao {
-    private String nome;
+/**
+ * Classe para gerenciar a reposta do backend para o frontend
+ */
+public class Resposta {
+    private String operacao;
     private boolean status = true;
-    private String mensagem = "Operacao realizada com sucesso.";
+    private String mensagem = "";
 
-    public Operacao(String nome, boolean status, String mensagem) {
-        this.nome = nome;
+
+    public Resposta(String operacao, boolean status, String mensagem) {
+        this.operacao = operacao;
         this.status = status;
         this.mensagem = mensagem;
     }
 
-    public Operacao(String nome) {
-        this.nome = nome;
+    public Resposta(String operacao) {
+        this.operacao = operacao;
     }
 
     public String json() {
         return String.format(
             "{ \"nome\": \"%s\", \"status\": %s, \"mensagem\": \"%s\" }",
-            nome,
+            operacao,
             status,
             mensagem
         );
     }
 
-    public Operacao setNome(String nome) {
-        this.nome = nome;
+    public Resposta setNome(String operacao) {
+        this.operacao = operacao;
         return this;
     }
 
-    public Operacao setStatus(boolean status) {
+    public Resposta setStatus(boolean status) {
         this.status = status;
         return this;
     }
 
-    public Operacao setMensagem(String mensagem) {
+    public Resposta setMensagem(String mensagem) {
         this.mensagem = mensagem;
         return this;
     }
 
-    public String getNome() {
-        return nome;
+    public String getOperacao() {
+        return operacao;
     }
 
     public boolean getStatus() {

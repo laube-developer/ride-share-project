@@ -2,7 +2,7 @@
 
 import { FieldGroup } from "@/components/ui/field";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useMap } from "@vis.gl/react-google-maps";
 
 import { toast } from "sonner"
@@ -13,7 +13,7 @@ import AbaCategoria from "../AbasMenuPassageiro/AbaCategoria";
 import AbaBuscaMotorista from "../AbasMenuPassageiro/AbaBuscaMotorista";
 import AbaCorrida from "../AbasMenuPassageiro/AbaCorrida";
 import AbaPagamento from "../AbasMenuPassageiro/AbaPagamento";
-import { AbaMenuPassageiro, Categoria, FormaPagamento, Geolocalizacao, Localizacao, Motorista, PagamentoStatus, StatusCorrida } from "@/types/types";
+import { AbaMenuPassageiro, Categoria, FormaPagamento, Geolocalizacao, Localizacao, Motorista, PagamentoStatus, Sessao, StatusCorrida } from "@/types/types";
 import { handleUpdateDestino, handleUpdateOrigem } from "@/util/googleApiMethods";
 
 type MenuPassageiroProps = {
@@ -23,6 +23,7 @@ type MenuPassageiroProps = {
     distancia: number | undefined;
     posicao: { lat: number; lng: number } | null;
     getPosicaoAtual: (callback: (pos: Geolocalizacao | null) => void) => void;
+    session: Sessao | null
 };
 
 const motorista: Motorista = {
@@ -52,12 +53,12 @@ export default function MenuPassageiro({
     onBuscarMotorista,
     distancia,
     posicao,
-    getPosicaoAtual
+    getPosicaoAtual,
+    session,
 }: MenuPassageiroProps) {
-
     const [origem, setOrigem] = useState<Localizacao>(null);
     const [destino, setDestino] = useState<Localizacao>(null);
-    const [abaMenu, setAbaMenu] = useState<AbaMenuPassageiro>("pagamento");
+    const [abaMenu, setAbaMenu] = useState<AbaMenuPassageiro>("origem");
     const [categoria, setCategoria] = useState<Categoria>('luxo');
 
     const inputOrigemRef = useRef<HTMLInputElement | null>(null);

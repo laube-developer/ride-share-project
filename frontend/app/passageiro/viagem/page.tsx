@@ -2,6 +2,7 @@
 
 import Header from '@/components/Header';
 import InterfacePrincipal from '@/components/InterfacePrincipal';
+import LoadingPage from '@/components/Loading';
 import DestinoMarker from '@/components/maps/DestinoMarker';
 import DistanceTimeCalculator from '@/components/maps/DistanceTimeCalculator';
 import { LocalizacaoAtual } from '@/components/maps/LocalizacaoAtual';
@@ -9,6 +10,7 @@ import MenuPassageiro from '@/components/maps/MenuPassageiro';
 import OrigemMarker from '@/components/maps/OrigemMarker';
 import RouteCalculator from '@/components/maps/RouteCalculator';
 import RoutePolyline from '@/components/maps/RoutePolyline.tsx';
+import useSessionStorage from '@/hooks/useSessionStorage';
 import { Localizacao } from '@/types/types';
 import { APIProvider, Map } from '@vis.gl/react-google-maps';
 import { useEffect, useState } from 'react';
@@ -21,6 +23,7 @@ export default function ViagemPage() {
     const [rota, setRota] = useState<google.maps.LatLngLiteral[]>([]);
     const [distancia, setDistancia] = useState<number | undefined>(undefined);
     const [duracao, setDuracao] = useState<number | undefined>(undefined);
+    const { session, isLoading } = useSessionStorage('SESSAO');
 
     const getPosicaoAtual = (callback: (pos: { lat: number; lng: number } | null) => void) => {
         navigator.geolocation.getCurrentPosition(
@@ -61,11 +64,13 @@ export default function ViagemPage() {
         setRota([]);
     };
 
+    if (isLoading) return <LoadingPage />
+
     return (
         <div className="flex flex-col h-dvh relative">
 
             <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
-                <Header />
+                <Header sessao={session}/>
 
                 <Map
                     style={{ width: "100vw", height: "100vh" }}
@@ -85,6 +90,7 @@ export default function ViagemPage() {
                             posicao={posicao}
                             distancia={distancia}
                             getPosicaoAtual={getPosicaoAtual}
+                            session={session}
                         />
                     </InterfacePrincipal>
 

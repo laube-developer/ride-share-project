@@ -6,8 +6,9 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import { Sessao } from "@/types/types";
 
-function MyBadge({children}: {children: React.ReactNode}) {
+function MyBadge({children, session}: {children: React.ReactNode, session: Sessao | null}) {
   return (
     <div className="border-2 border-slate-200 text-[.5rem] font-semibold px-1 py-0.5 rounded-md top-0 right-0 transform translate-x-1/2 -translate-y-1/2">
       {children}
@@ -15,7 +16,7 @@ function MyBadge({children}: {children: React.ReactNode}) {
   );
 }
 
-export default function Header() {
+export default function Header({sessao}:{sessao: Sessao | null}) {
   const router = useRouter();
 
   const comandos = {
@@ -74,6 +75,9 @@ export default function Header() {
           </div>
         </DropdownMenuTrigger>
         <DropdownMenuContent className="w-64" align="start">
+          <DropdownMenuItem>
+            {sessao?.nomeDeUsuario}
+          </DropdownMenuItem>
           <DropdownMenuLabel>Viagem</DropdownMenuLabel>
           <DropdownMenuGroup>
             <DropdownMenuItem onClick={comandos.irParaViagens}>

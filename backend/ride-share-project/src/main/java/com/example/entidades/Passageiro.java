@@ -1,8 +1,9 @@
 package com.example.entidades;
 
+import com.example.interfaces.Autenticavel;
 import com.example.parametricos.Cadastro;
 
-public class Passageiro extends Usuario{
+public class Passageiro extends Usuario implements Autenticavel{
 	
 	private Cadastro<MeioDePagamento> meioDePagamento;
 	

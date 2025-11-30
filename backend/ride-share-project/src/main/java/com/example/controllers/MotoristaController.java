@@ -2,7 +2,7 @@ package com.example.controllers;
 
 import com.example.entidades.Motorista;
 import com.example.enums.StatusMotoristaEnum;
-import com.example.examples.Operacao;
+import com.example.examples.Resposta;
 import com.example.exceptions.MotoristaInvalidoException;
 //Nao sei se devo adicionar o UsuarioouSenhaIncorretosException aqui...
 
@@ -10,7 +10,7 @@ import com.example.exceptions.MotoristaInvalidoException;
 public class MotoristaController {
     private static final String NOME_OPERACAO = "ficar-online";
     
-    public static Operacao ficarOnline(Motorista motorista) {
+    public static Resposta ficarOnline(Motorista motorista) {
         try {
             if (motorista == null) {
                 throw new MotoristaInvalidoException("Motorista nao informado.");
@@ -32,17 +32,17 @@ public class MotoristaController {
             }
 
             motorista.setStatus(StatusMotoristaEnum.ONLINE);
-            return new Operacao(NOME_OPERACAO, true, "Motorista ficou online.");
+            return new Resposta(NOME_OPERACAO, true, "Motorista ficou online.");
 
         } catch (MotoristaInvalidoException e) {
-            return new Operacao(
+            return new Resposta(
                 NOME_OPERACAO,
                 false,
                 e.getMessage()
             );
 
         } catch (Exception e) {
-            return new Operacao(
+            return new Resposta(
                 NOME_OPERACAO,
                 false,
                 "Erro ao atualizar status do motorista para ONLINE."
