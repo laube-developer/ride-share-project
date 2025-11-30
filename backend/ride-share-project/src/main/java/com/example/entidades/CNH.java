@@ -28,14 +28,8 @@ public class CNH {
         this.validade = validade;
     }
 
-    public static boolean verificarvalidade(LocalDate validade){
+    public boolean verificarValidade() {
         LocalDate hoje = LocalDate.now();
-        if (validade.isBefore(hoje)) {
-            System.out.println("CNH vencida");
-            return false;
-        } else {
-            System.out.println("CNH válida");
-            return true;
-        }
+        return validade != null && !validade.isBefore(hoje);
     }
 }

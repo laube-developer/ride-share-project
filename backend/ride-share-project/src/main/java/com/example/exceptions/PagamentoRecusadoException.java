@@ -1,6 +1,6 @@
 package com.example.exceptions;
 
-//Excecao para recusas no pagamento com cartao ou pix. 
+//Excecao para recusas no pagamento com cartao ou pix.
 
 public class PagamentoRecusadoException extends Exception {
         public PagamentoRecusadoException(String message) {

@@ -1,9 +1,9 @@
 package com.example.entidades;
 
-import java.util.ArrayList;
+import com.example.interfaces.Autenticavel;
 import com.example.parametricos.Cadastro;
 
-public class Passageiro extends Usuario{
+public class Passageiro extends Usuario implements Autenticavel{
 	
 	private Cadastro<MeioDePagamento> meioDePagamento;
 	
@@ -38,5 +38,15 @@ public class Passageiro extends Usuario{
 		
 		System.out.println("Meio de pagamento cadastrado com sucesso!");
 	}
-	
+
+	public void setMeioPadrao(MeioDePagamento meioPadrão) {
+		//int subs = meioDePagamento[0];
+		//int index = meioDePagamento.indexOf(meioPadrão);
+		//meioDePagamento[0] = meioDePagamento[index];
+		//meioDePagamento[index] = subs;
+		//System.out.println("Meio de pagamento padrão alterado com sucesso!");
+
+	}
+
+	//é necessario criar um metodo para buscar o status da corrida para criar a excecao
 }

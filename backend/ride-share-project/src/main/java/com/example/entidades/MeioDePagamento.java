@@ -1,9 +1,21 @@
 package com.example.entidades;
 
+//import com.example.entidades.Passageiro; mano o meu projeto ta mais amarelo que tudo mds
+//import com.example.parametricos.Cadastro; nao sei, so acho que talvez funcione
+
 public abstract class MeioDePagamento {
 	
-	private String nomeMeioPagamento;
+	private final String nomeMeioPagamento; // final pq na teoria ele nao deveria mudar, se o cartao muda o metodo vira outro, ele cadastra outro
 	private int saldo;
+	private MeioDePagamento meioPadrao;
+
+	public MeioDePagamento getMeioPadrao() {
+		return meioPadrao;
+	}
+
+	public MeioDePagamento setMeioPadrao(){
+		return meioPadrao;
+	}
 	
 	public MeioDePagamento(String nome, int saldo){
 		nomeMeioPagamento = nome;
@@ -25,6 +37,25 @@ public abstract class MeioDePagamento {
 
 	public String getNomeMeioPagamento() {
 		return nomeMeioPagamento;
+	}
+
+	public boolean setMeioPadrao(MeioDePagamento meioPadrao) {
+		if (meioPadrao == null) {
+			System.out.println("Meio de pagamento invalido.");
+			return false;
+		}
+
+		//int index = MeioDePagamento(meioPadrao);
+		//if (index < 0 || index >= this.meiosDePagamento.getTamanho()) {
+		//	System.out.println("Meio de pagamento nao cadastrado.");
+		//	return false;
+		//}
+		//Pelo amor de Deus alguem me ajuda
+
+
+		this.meioPadrao = meioPadrao;
+		System.out.println("Meio de pagamento padrao alterado com sucesso!");
+		return true;
 	}
 
 }

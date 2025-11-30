@@ -3,8 +3,9 @@ package com.example.entidades;
 import java.util.List;
 
 import com.example.enums.StatusMotoristaEnum;
+import com.example.interfaces.Autenticavel;
 
-public class Motorista extends Usuario {
+public class Motorista extends Usuario implements Autenticavel {
     Veiculo veiculoAtivo;
     List<Veiculo> veiculos;
     CNH cnh;
@@ -61,10 +62,16 @@ public class Motorista extends Usuario {
     public StatusMotoristaEnum getStatus() {
         return status;
     }
+
+    public void setStatus(StatusMotoristaEnum status) {
+        this.status = status;
+    }
     
+    @Override
     public String toString() {
-    	return "Motorista: \n"+
-    			"    "+nome + "\n" +
+    	return """
+               Motorista: 
+                   """+nome + "\n" +
     			"    "+email + "\n" +
     			"    "+cpf + "\n" +
     			"    "+telefone + "\n";

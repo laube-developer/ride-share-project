@@ -2,10 +2,12 @@ package com.example.entidades;
 
 public class Dinheiro extends MeioDePagamento{
 	
+        @SuppressWarnings("unused")
 	Dinheiro(int saldo){
 		super("Dinheiro", saldo);
 	}
 
+        @Override
 	public boolean processarPagamento(int valorParaPagar) {
 		boolean processou=false;
 
@@ -27,6 +29,7 @@ public class Dinheiro extends MeioDePagamento{
 		return processou;
 	}
 
+        @Override
 	public void adicionarSaldo(int valor) {
 		setSaldo(valor);
 		System.out.println("Valor adicionado com sucesso, sua nova quantidade de Dinheiro : " + getSaldo() );
