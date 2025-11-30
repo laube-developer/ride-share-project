@@ -32,6 +32,8 @@ export default function Passageiro(){
                             name="email"
                             placeholder="exemplo@mail.com"
                             required
+                            autoCapitalize="none"
+
                         />
                     </Field>
 
@@ -46,6 +48,8 @@ export default function Passageiro(){
                             type="password"
                             placeholder="********"
                             required
+                            autoCapitalize="none"
+
                         />
                     </Field>
 

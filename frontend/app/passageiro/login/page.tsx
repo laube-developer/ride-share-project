@@ -1,13 +1,44 @@
+"use client"
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldLegend } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-export default function Passageiro(){
+export default function Passageiro() {
+    const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
+
+    const router = useRouter()
+
+    const login = () => {
+        fetch("192.168.0.197:8080/api/passageiro/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "email": email,
+                "senha": senha,
+            })
+        })
+        .then(async (data) => {
+            const sessionData = await data.json();
+            console.log(sessionData);
+            sessionStorage.setItem('SESSION', JSON.stringify(sessionData));
+            router.push('/passageiro/viagem')
+        })
+        .catch(reason => {
+            alert("Falha ao realizar login\n"+ reason);
+
+        })
+    }
+
     return (
         <div className="w-full h-screen flex py-5 px-3 justify-center items-center bg-white">
             <div className="flex w-full h-full absolute left-0 top-0">
-                <Image 
+                <Image
                     width={1920}
                     height={1500}
                     src="/login_background.jpg"
@@ -25,38 +56,46 @@ export default function Passageiro(){
                     </div>
                     <Field>
                         <FieldLabel htmlFor="email">
-                        Email
+                            Email
                         </FieldLabel>
                         <Input
                             id="email"
                             name="email"
                             placeholder="exemplo@mail.com"
                             required
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            autoCapitalize="none"
                         />
                     </Field>
 
-                    <Field>
-                        <FieldLabel htmlFor="password" className="flex justify-between">
-                            Senha
-                            <a href="/passageiro/recuperar-senha" className="text-primary hover:underline cursor-pointer text-sky-700">Esqueci a senha</a>
-                        </FieldLabel>
+                    <Field className="flex flex-col-reverse">
+                        
                         <Input
                             id="password"
                             name="password"
                             type="password"
                             placeholder="********"
                             required
+                            value={senha}
+                            onChange={(e) => setSenha(e.target.value)}
+                            autoCapitalize="none"
+
                         />
+                        <FieldLabel htmlFor="password" className="flex justify-between">
+                            Senha
+                            <a href="/passageiro/recuperar-senha" className="text-primary hover:underline cursor-pointer text-sky-700">Esqueci a senha</a>
+                        </FieldLabel>
                     </Field>
 
                     <Field orientation={"horizontal"} className="justify-center items-center">
                         <a href="/passageiro/criar-conta" className="text-primary hover:underline cursor-pointer text-sky-700">Ainda não tenho conta</a>
                     </Field>
 
-                    <Field orientation="horizontal">
-                        <Button type="submit" className="cursor-pointer bg-[#fdc426] text-black hover:bg-[#ffcb2c] w-full">Entrar</Button>
+                    <Field orientation="horizontal" onClick={login}>
+                        <Button type="button" className="cursor-pointer bg-[#fdc426] text-black hover:bg-[#ffcb2c] w-full">Entrar</Button>
                     </Field>
-                    
+
                 </FieldGroup>
             </form>
         </div>
