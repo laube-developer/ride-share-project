@@ -54,7 +54,7 @@ public class PassageiroController {
             if (!temPagamento) {
                 throw new PassageiroInvalidoException("Cadastre pelo menos um meio de pagamento.");
             }
-            // If all checks pass, return a successful Operacao
+            
             return new Resposta(NOME_OPERACAO, true, "Passageiro ficou disponível com sucesso.");
         } catch (PassageiroInvalidoException e) {
             return new Resposta(NOME_OPERACAO, false, e.getMessage());
