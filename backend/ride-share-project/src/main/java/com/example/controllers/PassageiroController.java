@@ -42,12 +42,7 @@ public class PassageiroController {
             if (status == StatusCorridaEnum.EM_ANDAMENTO || status == StatusCorridaEnum.ACEITA) { //o cara ta pensanndo no futuro já, pedindo a proxima corrida, calma calabreso
                 throw new EstadoInvalidoException("Já existe uma corrida em andamento.");
             } //iniciar corrida já estando em uma
-
             
-            //if (meioPadrao(processarPagamento(valorParaPagar)) && corrida.getStatus() == StatusCorridaEnum.EM_ANDAMENTO) {
-            //    throw new PassageiroInvalidoException("Passageiro ja esta em uma corrida.");
-            //} //passageiro tentar pagar a corrida antes de finalizar a corrida (menor ideia do que fazer aqui)
-
             boolean temPagamento = passageiro.getMeiosDePagamento() != null
                 && passageiro.getMeiosDePagamento().getTamanho() > 0;
 
