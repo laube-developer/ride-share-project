@@ -3,67 +3,59 @@ package com.example.controllers;
 import com.example.entidades.Passageiro;
 import com.example.enums.StatusCorridaEnum;
 import com.example.exceptions.EstadoInvalidoException;
-import com.example.examples.Operacao;
-import com.example.exceptions.UsuarioouSenhaIncorretosException;
+import com.example.examples.Resposta;
+import com.example.exceptions.UsuarioOuSenhaIncorretosException;
 import com.example.exceptions.SaldoInsuficienteException;
+import com.example.parametricos.Cadastro;
 import com.example.exceptions.PagamentoPendenteException;
+import com.example.entidades.CadastroAutenticavel;
 import com.example.entidades.Corrida;
+import com.example.entidades.CredenciaisLogin;
 import com.example.exceptions.MetodoPagamentoInexistenteException;
 import com.example.entidades.MeioDePagamento;
+import com.example.enums.OperacaoPassageiro;
 
 import ch.qos.logback.core.status.Status;
 
 public class PassageiroController {
 
-    private static final String OPERACAO_SOLICITACAO = "solicitar-corrida";
-    private static final String OPERACAO_CANCELAMENTO = "cancelar-corrida";
-    private static final String OPERACAO_PAGAMENTO = "processar-pagamento";
-
-    // Parte de meio de pagamento, não sei se ponho aqui tbm
-    //private static final String OPERACAO_ADC_MEIO_PAG = "adicionar-meio-pagamento";
-    //private static final String OPERACAO_RMV_MEIO_PAG = "remover-meio-pagamento";
-    //private static final String OPERACAO_LIST_MEIO_PAG = "listar-meios-pagamento";
-
-    public static Operacao solicitarCorrida(Corrida corrida, Passageiro passageiro) throws UsuarioouSenhaIncorretosException, EstadoInvalidoException {
+    public static Resposta solicitarCorrida(Corrida corrida, Passageiro passageiro) throws UsuarioOuSenhaIncorretosException, EstadoInvalidoException {
         
         StatusCorridaEnum status = corrida.getStatus();
 
         try {
             if (passageiro == null || !passageiro.verificarSenha(passageiro.getSenha())) {
-                throw new UsuarioouSenhaIncorretosException("Usuário ou senha incorretos.");           
-            }
-    
 
         //Isso daqui vem para o solicitar corrida
             //if (status == StatusCorridaEnum.EM_ANDAMENTO || status == StatusCorridaEnum.ACEITA) { //o cara ta pensanndo no futuro já, pedindo a proxima corrida, calma calabreso
             //    throw new EstadoInvalidoException("Já existe uma corrida em andamento.");
             //} //iniciar corrida já estando em uma
 
-        return new Operacao(OPERACAO_SOLICITACAO, true, "...");
+        return new Resposta(OperacaoPassageiro.SOLICITACAO.getNome(), true, "...");
         
-        } catch (UsuarioouSenhaIncorretosException e) {
-            return new Operacao(OPERACAO_SOLICITACAO, false, e.getMessage());
+        } catch (UsuarioOuSenhaIncorretosException e) {
+            return new Resposta(OperacaoPassageiro.SOLICITACAO.getNome(), false, e.getMessage());
         }
     }
 
-    public static Operacao cancelarCorrida(...) {
+    public static Resposta cancelarCorrida(...) {
 
         try {
             // Lógica para cancelar a corrida
-        return new Operacao(OPERACAO_CANCELAMENTO, true, "...");
+        return new Resposta(OperacaoPassageiro.CANCELAR.getNome(), true, "...");
 
         } catch (Exception e) {
-            return new Operacao(OPERACAO_CANCELAMENTO, false, e.getMessage());
+            return new Resposta(OperacaoPassageiro.CANCELAR.getNome(), false, e.getMessage());
         }
     }
 
-    public static Operacao processarPagamento(MeioDePagamento meioPadrao, Corrida corrida, Passageiro passageiro, int valorParaPagar, int saldo) throws SaldoInsuficienteException, PagamentoPendenteException, UsuarioouSenhaIncorretosException, EstadoInvalidoException, MetodoPagamentoInexistenteException {   
+    public static Resposta processarPagamento(MeioDePagamento meioPadrao, Corrida corrida, Passageiro passageiro, int valorParaPagar, int saldo) throws SaldoInsuficienteException, PagamentoPendenteException, UsuarioOuSenhaIncorretosException, EstadoInvalidoException, MetodoPagamentoInexistenteException {   
         
         StatusCorridaEnum status = corrida.getStatus();
 
         try {
             if (passageiro == null || !passageiro.verificarSenha(passageiro.getSenha())) {
-                throw new UsuarioouSenhaIncorretosException("Usuário ou senha incorretos.");           
+                throw new UsuarioOuSenhaIncorretosException("Usuário ou senha incorretos.");           
             }
             if (saldo < 0){ //saldo negativo, ele ta devendo
                 throw new PagamentoPendenteException("Usuário realize o pagamento de suas pendências.");
@@ -85,18 +77,34 @@ public class PassageiroController {
                 throw new MetodoPagamentoInexistenteException("Cadastre pelo menos um meio de pagamento.");
             }
         // Se deu bom retorna a operação com sucesso.
-        return new Operacao(OPERACAO_PAGAMENTO, true, "Pagamento processado com sucesso");
+        return new Resposta(OperacaoPassageiro.PAGAMENTO.getNome(), true, "Pagamento processado com sucesso");
 
-        } catch (UsuarioouSenhaIncorretosException e) {
-            return new Operacao(OPERACAO_PAGAMENTO, false, e.getMessage());
+        } catch (UsuarioOuSenhaIncorretosException e) {
+            return new Resposta(OperacaoPassageiro.PAGAMENTO.getNome(), false, e.getMessage());
         } catch (PagamentoPendenteException e) {
-            return new Operacao(OPERACAO_PAGAMENTO, false, e.getMessage());
+            return new Resposta(OperacaoPassageiro.PAGAMENTO.getNome(), false, e.getMessage());
         } catch (SaldoInsuficienteException e) {
-            return new Operacao(OPERACAO_PAGAMENTO, false, e.getMessage());
+            return new Resposta(OperacaoPassageiro.PAGAMENTO.getNome(), false, e.getMessage());
         } catch (MetodoPagamentoInexistenteException e) {
-            return new Operacao(OPERACAO_PAGAMENTO, false, e.getMessage());
+            return new Resposta(OperacaoPassageiro.PAGAMENTO.getNome(), false, e.getMessage());
         } catch (EstadoInvalidoException e) {
-            return new Operacao(OPERACAO_PAGAMENTO, false, e.getMessage());
+            return new Resposta(OperacaoPassageiro.PAGAMENTO.getNome(), false, e.getMessage());
         }
+    }
+
+    public static Passageiro login(
+
+        CredenciaisLogin credenciais,
+        CadastroAutenticavel<Passageiro> cadastro
+
+    ) throws UsuarioOuSenhaIncorretosException{
+
+        Passageiro p = cadastro.buscarPorEmail(credenciais.getEmail());
+        if (p == null) throw new UsuarioOuSenhaIncorretosException();
+
+        boolean senhaValida = p.verificarSenha(credenciais.getSenha());
+        if (!senhaValida) throw new UsuarioOuSenhaIncorretosException();
+
+        return p;
     }
 }

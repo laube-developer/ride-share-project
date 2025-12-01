@@ -1,10 +1,10 @@
 package com.example.exceptions;
 
-public class UsuarioouSenhaIncorretosException extends Exception {
-        public UsuarioouSenhaIncorretosException(String message) {
+public class UsuarioOuSenhaIncorretosException extends Exception {
+        public UsuarioOuSenhaIncorretosException(String message) {
         super(message);
     }    
-        public UsuarioouSenhaIncorretosException() {
-        super("Usuário ou Senha incorreto, tente novamente.");
+        public UsuarioOuSenhaIncorretosException() {
+        super("Usuário ou Senha incorretos, tente novamente.");
     }   
 }

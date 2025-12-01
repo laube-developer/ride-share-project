@@ -2,7 +2,7 @@ package com.example.controllers;
 
 import com.example.entidades.Motorista;
 import com.example.enums.StatusMotoristaEnum;
-import com.example.examples.Operacao;
+import com.example.examples.Resposta;
 import com.example.exceptions.MotoristaInvalidoException;
 import com.example.exceptions.UsuarioouSenhaIncorretosException;
 
@@ -58,9 +58,5 @@ public class MotoristaController {
             return new Operacao(
                 OPERACAO_ONLINE,
                 false,
-                "Erro ao atualizar status do motorista para ONLINE."
             );
         }
-        
-    }
-}
