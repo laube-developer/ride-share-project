@@ -12,7 +12,7 @@ public class MotoristaController {
     private static final String OPERACAO_ONLINE = "ficar-online";
     private static final String OPERACAO_OFFLINE = "ficar-offline";
     private static final String OPERACAO_ACEITAR = "aceitar-corrida";
-    private static final String OPERACAO_INICIAR = "iniciar-corrida";
+    private static final String OPERACAO_INICIAR = "iniciar-corrida";ç.l
     private static final String OPERACAO_CANCELAR = "cancelar-corrida";
     private static final String OPERACAO_FINALIZAR = "finalizar-corrida";
     
