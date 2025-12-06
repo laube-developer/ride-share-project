@@ -23,7 +23,8 @@ export default function ViagemPage() {
     const [rota, setRota] = useState<google.maps.LatLngLiteral[]>([]);
     const [distancia, setDistancia] = useState<number | undefined>(undefined);
     const [duracao, setDuracao] = useState<number | undefined>(undefined);
-    const { session, isLoading } = useSessionStorage('SESSAO');
+    const {session, isLoading } = useSessionStorage('SESSION', '/passageiro/login', 'PASSAGEIRO');
+
 
     const getPosicaoAtual = (callback: (pos: { lat: number; lng: number } | null) => void) => {
         navigator.geolocation.getCurrentPosition(
@@ -40,7 +41,6 @@ export default function ViagemPage() {
         );
     };
 
-    
 
     useEffect(() => {
         getPosicaoAtual((pos) => {
@@ -64,7 +64,8 @@ export default function ViagemPage() {
         setRota([]);
     };
 
-    if (isLoading) return <LoadingPage />
+    
+    if (isLoading || !session) return <LoadingPage />
 
     return (
         <div className="flex flex-col h-dvh relative">

@@ -7,16 +7,7 @@ public abstract class MeioDePagamento {
 	
 	private final String nomeMeioPagamento; // final pq na teoria ele nao deveria mudar, se o cartao muda o metodo vira outro, ele cadastra outro
 	private int saldo;
-	private MeioDePagamento meioPadrao;
 
-	public MeioDePagamento getMeioPadrao() {
-		return meioPadrao;
-	}
-
-	public MeioDePagamento setMeioPadrao(){
-		return meioPadrao;
-	}
-	
 	public MeioDePagamento(String nome, int saldo){
 		nomeMeioPagamento = nome;
 		this.saldo = saldo;
@@ -29,17 +20,16 @@ public abstract class MeioDePagamento {
 	public int getSaldo() {
 		return saldo;
 	}
+
 	public void setSaldo(int saldo) {
 		this.saldo = saldo;
 	}
-	
-	//public abstract String toString();
 
 	public String getNomeMeioPagamento() {
 		return nomeMeioPagamento;
 	}
 
-	public boolean setMeioPadrao(MeioDePagamento meioPadrao) {
+	/*public boolean setMeioPadrao(MeioDePagamento meioPadrao) {
 		if (meioPadrao == null) {
 			System.out.println("Meio de pagamento invalido.");
 			return false;
@@ -56,6 +46,6 @@ public abstract class MeioDePagamento {
 		this.meioPadrao = meioPadrao;
 		System.out.println("Meio de pagamento padrao alterado com sucesso!");
 		return true;
-	}
+	}*/
 
 }

@@ -6,6 +6,7 @@ import com.example.parametricos.Cadastro;
 public class Passageiro extends Usuario implements Autenticavel{
 	
 	private Cadastro<MeioDePagamento> meioDePagamento;
+	private MeioDePagamento meioPadrao;
 	
 	public Passageiro(String nome, String email, String senha, String cpf, String telefone){
 		super(nome, email, senha, cpf, telefone);
@@ -23,6 +24,25 @@ public class Passageiro extends Usuario implements Autenticavel{
 		return meioDePagamento;
 	}
 	
+	public MeioDePagamento getMeioPadrao() {
+		return meioPadrao;
+	}
+	
+	public boolean setMeioPadrao(MeioDePagamento meioPadrão) {
+		if (meioPadrão == null) {
+			return false;
+		}
+		
+		// Verificar se o meio existe na lista
+		int index = meioDePagamento.indexOf(meioPadrão);
+		if (index < 0) {
+			return false;
+		}
+		
+		this.meioPadrao = meioPadrão;
+		return true;
+	}
+	
 	public void cadastrarMeioDePagamento(MeioDePagamento meioDePagamentoAdicionar) {
 		if (meioDePagamento.getTamanho() == 5) {
 			System.out.println("Remova um meio de pagamento para adicionar outro. 5 meios já cadastrado!");
@@ -34,19 +54,14 @@ public class Passageiro extends Usuario implements Autenticavel{
 	
 	public void removerMeioDePagamento(MeioDePagamento meioDePagamentoRemover) {
 		int index = meioDePagamento.indexOf(meioDePagamentoRemover);
-		meioDePagamento.remover(index);
-		
-		System.out.println("Meio de pagamento cadastrado com sucesso!");
+		if (index >= 0) {
+			meioDePagamento.remover(index);
+			System.out.println("Meio de pagamento removido com sucesso!");
+			
+			// Se era o padrão, limpar a referência
+			if (meioPadrao != null && meioPadrao.equals(meioDePagamentoRemover)) {
+				meioPadrao = null;
+			}
+		}
 	}
-
-	public void setMeioPadrao(MeioDePagamento meioPadrão) {
-		//int subs = meioDePagamento[0];
-		//int index = meioDePagamento.indexOf(meioPadrão);
-		//meioDePagamento[0] = meioDePagamento[index];
-		//meioDePagamento[index] = subs;
-		//System.out.println("Meio de pagamento padrão alterado com sucesso!");
-
-	}
-
-	//é necessario criar um metodo para buscar o status da corrida para criar a excecao
 }
