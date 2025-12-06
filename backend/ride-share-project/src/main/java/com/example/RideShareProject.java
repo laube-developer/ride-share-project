@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.controllers.PassageiroController;
 import com.example.dtos.CredenciaisLogin;
 import com.example.dtos.SessaoFrontend;
+import com.example.entidades.Corrida;
 // Importação de classes do projeto
 import com.example.entidades.Motorista;
 import com.example.entidades.Passageiro;
@@ -32,6 +33,7 @@ public class RideShareProject {
 	private CadastroAutenticavel<Passageiro> cadastroPassageiro;
 	private CadastroAutenticavel<Motorista> cadastroMotorista;
 	private CadastroSessionavel<Sessao> cadastroSessoes;
+	private Cadastro<Corrida> cadastroCorridas;
 
 	@Bean
 	public CadastroAutenticavel<Passageiro> cadastroPassageiro() {
@@ -49,6 +51,12 @@ public class RideShareProject {
 	public CadastroSessionavel<Sessao> cadastroSessoes() {
 		this.cadastroSessoes = new CadastroSessionavel<>(100);
 		return this.cadastroSessoes;
+	}
+
+	@Bean
+	public Cadastro<Corrida> cadastroCorrida() {
+		this.cadastroCorridas = new Cadastro<Corrida>(1000);
+		return this.cadastroCorridas;
 	}
 
 	@Bean

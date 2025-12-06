@@ -4,16 +4,22 @@ import com.example.entidades.Motorista;
 import com.example.enums.StatusMotoristaEnum;
 import com.example.examples.Resposta;
 import com.example.exceptions.MotoristaInvalidoException;
-//Nao sei se devo adicionar o UsuarioouSenhaIncorretosException aqui...
+import com.example.exceptions.UsuarioouSenhaIncorretosException;
 
 
 public class MotoristaController {
-    private static final String NOME_OPERACAO = "ficar-online";
+
+    private static final String OPERACAO_ONLINE = "ficar-online";
+    private static final String OPERACAO_OFFLINE = "ficar-offline";
+    private static final String OPERACAO_ACEITAR = "aceitar-corrida";
+    private static final String OPERACAO_INICIAR = "iniciar-corrida";ç.l
+    private static final String OPERACAO_CANCELAR = "cancelar-corrida";
+    private static final String OPERACAO_FINALIZAR = "finalizar-corrida";
     
-    public static Resposta ficarOnline(Motorista motorista) {
+    public static Operacao ficarOnline(Motorista motorista) throws UsuarioouSenhaIncorretosException, MotoristaInvalidoException {
         try {
-            if (motorista == null) {
-                throw new MotoristaInvalidoException("Motorista nao informado.");
+            if (motorista == null || !motorista.verificarSenha(motorista.getSenha())) {
+                throw new UsuarioouSenhaIncorretosException("Motorista ou senha incorretos.");
             }
 
             boolean validadeCNH = motorista.getCNH() != null && motorista.getCNH().verificarValidade();
@@ -32,22 +38,25 @@ public class MotoristaController {
             }
 
             motorista.setStatus(StatusMotoristaEnum.ONLINE);
-            return new Resposta(NOME_OPERACAO, true, "Motorista ficou online.");
+            return new Operacao(OPERACAO_ONLINE, true, "Motorista ficou online.");
 
         } catch (MotoristaInvalidoException e) {
-            return new Resposta(
-                NOME_OPERACAO,
+            return new Operacao(
+                OPERACAO_ONLINE,
+                false,
+                e.getMessage()
+            );
+
+        } catch (UsuarioouSenhaIncorretosException e) {
+            return new Operacao(
+                OPERACAO_ONLINE,
                 false,
                 e.getMessage()
             );
 
         } catch (Exception e) {
-            return new Resposta(
-                NOME_OPERACAO,
+            return new Operacao(
+                OPERACAO_ONLINE,
                 false,
-                "Erro ao atualizar status do motorista para ONLINE."
             );
         }
-        
-    }
-}
