@@ -1,7 +1,6 @@
-package com.example.entidades;
+package com.example.parametricos;
 
 import com.example.interfaces.Autenticavel;
-import com.example.parametricos.Cadastro;
 
 public class CadastroAutenticavel<T extends Autenticavel> extends Cadastro<T> {
     public CadastroAutenticavel(int tamanho){

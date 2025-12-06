@@ -52,5 +52,6 @@ export type StatusMotorista = "online" | "offline" | "em_corrida" | "processando
 export type Sessao = {
     userEmail: string,
     sessaoToken: string,
-    nomeDeUsuario: string
+    nomeDeUsuario: string,
+    categoria: "PASSAGEIRO" | "MOTORISTA",
 }

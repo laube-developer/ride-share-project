@@ -1,6 +1,7 @@
 package com.example.controllers;
 
 import com.example.entidades.Passageiro;
+import com.example.entidades.Sessao;
 import com.example.enums.StatusCorridaEnum;
 import com.example.exceptions.EstadoInvalidoException;
 import com.example.examples.Resposta;
@@ -8,10 +9,12 @@ import com.example.exceptions.PassageiroInvalidoException;
 import com.example.exceptions.SaldoInsuficienteException;
 import com.example.exceptions.UsuarioOuSenhaIncorretosException;
 import com.example.parametricos.Cadastro;
+import com.example.parametricos.CadastroAutenticavel;
+import com.example.parametricos.CadastroSessionavel;
 import com.example.exceptions.PagamentoPendenteException;
-import com.example.entidades.CadastroAutenticavel;
+import com.example.dtos.CredenciaisLogin;
+import com.example.dtos.SessaoFrontend;
 import com.example.entidades.Corrida;
-import com.example.entidades.CredenciaisLogin;
 import com.example.exceptions.MetodoPagamentoInexistenteException;
 import com.example.entidades.MeioDePagamento;
 
