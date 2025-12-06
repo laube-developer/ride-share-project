@@ -1,24 +1,21 @@
 package com.example.dtos;
 
-import com.example.enums.CategoriaUsuarioEnum;
-
-public class RespostaLogin {
+public class SessaoFrontend {
     private String nomeDeUsuario;
     private String sessaoToken;
     private String email;
-    private CategoriaUsuarioEnum categoria;
+    private String categoria;
 
-    public RespostaLogin(
+    public SessaoFrontend(
         String nomeDeUsuario,
         String sessaoToken,
         String email,
-        CategoriaUsuarioEnum categoria
+        String categoria
     ){
         this.nomeDeUsuario = nomeDeUsuario;
         this.sessaoToken = sessaoToken;
         this.email = email;
         this.categoria = categoria;
-
     }
 
     public String getNomeDeUsuario(){
@@ -45,11 +42,11 @@ public class RespostaLogin {
         this.email = email;
     }
 
-    public CategoriaUsuarioEnum getCatetoria(){
+    public String getCatetoria(){
         return categoria;
     }
 
-    public void setCategoria(CategoriaUsuarioEnum c){
+    public void setCategoria(String c){
         this.categoria = c;
     }
 

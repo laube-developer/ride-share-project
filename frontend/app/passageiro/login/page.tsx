@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export default function Passageiro() {
     const [email, setEmail] = useState("");
@@ -13,7 +14,9 @@ export default function Passageiro() {
     const router = useRouter()
 
     const login = () => {
-        fetch("192.168.0.197:8080/api/passageiro/login", {
+        const backend = process.env.NEXT_PUBLIC_SPRIGBOOT_DOMAIN;
+
+        fetch(`${backend}/api/passageiro/login`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -24,14 +27,20 @@ export default function Passageiro() {
             })
         })
         .then(async (data) => {
+            if (data.status != 200) {
+                toast.error(await data.text(), {
+                    position: "top-right"
+                })
+                return
+            }
+
             const sessionData = await data.json();
             console.log(sessionData);
             sessionStorage.setItem('SESSION', JSON.stringify(sessionData));
             router.push('/passageiro/viagem')
         })
         .catch(reason => {
-            alert("Falha ao realizar login\n"+ reason);
-
+            toast.error("Falha ao realizar login\n"+ reason, {position: "top-right"});
         })
     }
 

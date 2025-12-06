@@ -12,17 +12,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.controllers.PassageiroController;
-import com.example.dtos.RespostaLogin;
-import com.example.entidades.CadastroAutenticavel;
-import com.example.entidades.CadastroSessionavel;
-import com.example.entidades.CredenciaisLogin;
+import com.example.dtos.CredenciaisLogin;
+import com.example.dtos.SessaoFrontend;
 // Importação de classes do projeto
 import com.example.entidades.Motorista;
 import com.example.entidades.Passageiro;
+import com.example.entidades.Sessao;
 import com.example.exceptions.UsuarioOuSenhaIncorretosException;
 import com.example.parametricos.Cadastro;
-import com.example.entidades.Sessao;
-import com.example.enums.CategoriaUsuarioEnum;
+import com.example.parametricos.CadastroAutenticavel;
+import com.example.parametricos.CadastroSessionavel;
 
 import java.util.UUID;
 
@@ -35,19 +34,19 @@ public class RideShareProject {
 	private CadastroSessionavel<Sessao> cadastroSessoes;
 
 	@Bean
-	public CadastroAutenticavel<Passageiro> cadastroPassageiro(){
+	public CadastroAutenticavel<Passageiro> cadastroPassageiro() {
 		this.cadastroPassageiro = new CadastroAutenticavel<Passageiro>(20);
 		return this.cadastroPassageiro;
 	}
 
 	@Bean
-	public CadastroAutenticavel<Motorista> cadastroMotorista(){
+	public CadastroAutenticavel<Motorista> cadastroMotorista() {
 		this.cadastroMotorista = new CadastroAutenticavel<Motorista>(20);
 		return this.cadastroMotorista;
 	}
 
 	@Bean
-	public CadastroSessionavel<Sessao> cadastroSessoes(){
+	public CadastroSessionavel<Sessao> cadastroSessoes() {
 		this.cadastroSessoes = new CadastroSessionavel<>(100);
 		return this.cadastroSessoes;
 	}
@@ -58,21 +57,25 @@ public class RideShareProject {
 			System.out.println("Inicializando dados padrão de cadastro (Usuarios)");
 
 			Passageiro pp = new Passageiro(
-				"Rafael",
-				"rafaellaube11@gmail.com",
-				"Senha1234",
-				"00000000000",
-				"00000000000");
+					"Rafael",
+					"rafaellaube11@gmail.com",
+					"Senha1234",
+					"00000000000",
+					"00000000000");
 			cadastroPassageiro.adicionar(pp);
 
 			Motorista mp = new Motorista(
-				"Rafael",
-				"rafaellaube11@gmail.com",
-				"Senha1234",
-				"00000000000",
-				"00000000000");
+					"Rafael",
+					"rafaellaube11@gmail.com",
+					"Senha1234",
+					"00000000000",
+					"00000000000");
 			cadastroMotorista.adicionar(mp);
 		};
+	}
+
+	public static void main(String[] args) {
+		SpringApplication.run(RideShareProject.class, args);
 	}
 
 	@RequestMapping("/")
@@ -81,33 +84,48 @@ public class RideShareProject {
 	}
 
 	@PostMapping("/api/passageiro/login")
-	ResponseEntity<Object> passageiroLogin(@RequestBody CredenciaisLogin credenciais){
+	ResponseEntity<Object> passageiroLogin(@RequestBody CredenciaisLogin credenciais) {
 		try {
 			Passageiro passageiroAutenticado = PassageiroController.login(credenciais, cadastroPassageiro);
 
 			String novoToken = UUID.randomUUID().toString();
 
-			if (cadastroSessoes.temSessaoAtiva(credenciais.getEmail())){
+			if (cadastroSessoes.temSessaoAtiva(credenciais.getEmail())) {
 				Sessao s = cadastroSessoes.getSessao(credenciais.getEmail());
-				cadastroSessoes.remover(s);
+				cadastroSessoes.removerSessoesAbertas(s.getUserEmail());
 			}
 
-			RespostaLogin resposta = new RespostaLogin(
-				passageiroAutenticado.getNome(),
-				novoToken,
-				passageiroAutenticado.getEmail(),
-				CategoriaUsuarioEnum.PASSAGEIRO
+			SessaoFrontend resposta = new SessaoFrontend(
+					passageiroAutenticado.getNome(),
+					novoToken,
+					passageiroAutenticado.getEmail(),
+					"PASSAGEIRO"
 			);
 
 			return ResponseEntity.ok(resposta);
+
 		} catch (UsuarioOuSenhaIncorretosException e) {
-			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario ou senha incorretos");
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
 
-	public static void main(String[] args) {
-		SpringApplication.run(RideShareProject.class, args);
+	@PostMapping("/api/passageiro/logout")
+	ResponseEntity<Object> passageiroLogout(@RequestBody SessaoFrontend sessao) {
+		try {
+			if (cadastroSessoes.temSessaoAtiva(sessao.getEmail())) {
+				boolean ok = cadastroSessoes.removerSessao(sessao.getSessaoToken(), sessao.getEmail());
 
+				if (!ok)
+					throw new Exception("Falha ao fazer logout");
+			}
+
+			return ResponseEntity.ok("");
+
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
+		}
 	}
 
 }

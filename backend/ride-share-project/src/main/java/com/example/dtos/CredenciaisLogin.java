@@ -1,4 +1,4 @@
-package com.example.entidades;
+package com.example.dtos;
 
 public class CredenciaisLogin {
     private String email;
