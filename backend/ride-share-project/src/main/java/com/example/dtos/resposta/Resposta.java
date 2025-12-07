@@ -1,21 +1,22 @@
-package com.example.examples;
+package com.example.dtos.resposta;
+
+import com.example.enums.OperacaoEnum;
 
 /**
  * Classe para gerenciar a reposta do backend para o frontend
  */
 public class Resposta {
-    private String operacao;
     private boolean status = true;
     private String mensagem = "";
+    private OperacaoEnum operacao;
 
-
-    public Resposta(String operacao, boolean status, String mensagem) {
+    public Resposta(OperacaoEnum operacao, boolean status, String mensagem) {
         this.operacao = operacao;
         this.status = status;
         this.mensagem = mensagem;
     }
 
-    public Resposta(String operacao) {
+    public Resposta(OperacaoEnum operacao) {
         this.operacao = operacao;
     }
 
@@ -28,7 +29,7 @@ public class Resposta {
         );
     }
 
-    public Resposta setNome(String operacao) {
+    public Resposta setNome(OperacaoEnum operacao) {
         this.operacao = operacao;
         return this;
     }
@@ -43,7 +44,7 @@ public class Resposta {
         return this;
     }
 
-    public String getOperacao() {
+    public OperacaoEnum getOperacao() {
         return operacao;
     }
 

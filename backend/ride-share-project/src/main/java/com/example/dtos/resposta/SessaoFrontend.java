@@ -1,21 +1,36 @@
-package com.example.dtos;
+package com.example.dtos.resposta;
 
-public class SessaoFrontend {
+import com.example.enums.OperacaoEnum;
+
+public class SessaoFrontend extends Resposta{
     private String nomeDeUsuario;
     private String sessaoToken;
     private String email;
     private String categoria;
 
+    //     private boolean status = true;
+    // private String mensagem = "";
+    // private Operacao operacao;
+
     public SessaoFrontend(
         String nomeDeUsuario,
         String sessaoToken,
         String email,
-        String categoria
-    ){
+        String categoria,
+        boolean status,
+        String mensagem
+    ){  
+        super(
+            OperacaoEnum.PASSAGEIRO_LOGIN,
+            status,
+            mensagem
+        );
+
         this.nomeDeUsuario = nomeDeUsuario;
         this.sessaoToken = sessaoToken;
         this.email = email;
         this.categoria = categoria;
+
     }
 
     public String getNomeDeUsuario(){
