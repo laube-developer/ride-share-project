@@ -4,18 +4,22 @@ import com.example.interfaces.Sessionavel;
 
 public class Sessao implements Sessionavel{
     private String token;
-    private String userEmail;
+    private Usuario usuario;
 
-    public void setUserEmail(String email){
-        userEmail = email;
+    public void setUsuario(Usuario usuario){
+        this.usuario = usuario;
     }
 
-    public String getUserEmail(){
-        return userEmail;
+    public Usuario getUsuario(){
+        return usuario;
+    }
+
+    public void setTokenSessao(String token){
+        this.token = token;
     }
 
     public boolean verificarEmail(String email){
-        return this.userEmail.equals(email);
+        return this.usuario.getEmail().equals(email);
     }
 
     public boolean verificarToken(String token){
@@ -23,6 +27,6 @@ public class Sessao implements Sessionavel{
     }
 
     public boolean verificarSessao(String token, String email){
-        return token.equals(this.token) && email.equals(this.userEmail);
+        return token.equals(this.token) && email.equals(this.usuario.getEmail());
     }
 }

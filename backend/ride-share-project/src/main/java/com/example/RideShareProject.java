@@ -12,13 +12,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.controllers.PassageiroController;
-import com.example.dtos.CredenciaisLogin;
-import com.example.dtos.SessaoFrontend;
+import com.example.dtos.requisicao.CredenciaisLogin;
+import com.example.dtos.requisicao.SolicitacaoCorrida;
+import com.example.dtos.resposta.Resposta;
+import com.example.dtos.resposta.SessaoFrontend;
 import com.example.entidades.Corrida;
+import com.example.entidades.GeoLocalizacao;
 // Importação de classes do projeto
 import com.example.entidades.Motorista;
 import com.example.entidades.Passageiro;
 import com.example.entidades.Sessao;
+import com.example.enums.OperacaoEnum;
+import com.example.exceptions.EstadoInvalidoException;
 import com.example.exceptions.UsuarioOuSenhaIncorretosException;
 import com.example.parametricos.Cadastro;
 import com.example.parametricos.CadastroAutenticavel;
@@ -49,7 +54,7 @@ public class RideShareProject {
 
 	@Bean
 	public CadastroSessionavel<Sessao> cadastroSessoes() {
-		this.cadastroSessoes = new CadastroSessionavel<>(100);
+		this.cadastroSessoes = new CadastroSessionavel<Sessao>(100);
 		return this.cadastroSessoes;
 	}
 
@@ -100,14 +105,20 @@ public class RideShareProject {
 
 			if (cadastroSessoes.temSessaoAtiva(credenciais.getEmail())) {
 				Sessao s = cadastroSessoes.getSessao(credenciais.getEmail());
-				cadastroSessoes.removerSessoesAbertas(s.getUserEmail());
+				cadastroSessoes.removerSessoesAbertas(s.getUsuario().getEmail());
 			}
+
+			Sessao s = new Sessao();
+			s.setUsuario(passageiroAutenticado);
+			cadastroSessoes.adicionar(s);
 
 			SessaoFrontend resposta = new SessaoFrontend(
 					passageiroAutenticado.getNome(),
 					novoToken,
 					passageiroAutenticado.getEmail(),
-					"PASSAGEIRO"
+					"PASSAGEIRO",
+					true,
+					"Login realizado com sucesso!"
 			);
 
 			return ResponseEntity.ok(resposta);
@@ -136,4 +147,28 @@ public class RideShareProject {
 		}
 	}
 
+	@PostMapping("/api/passageiro/solicitar-corrida")
+	ResponseEntity<Object> solicitarCorrida(@RequestBody SolicitacaoCorrida solicitacao) {
+		try {
+			Corrida c = PassageiroController.solicitarCorrida(
+				cadastroPassageiro.buscarPorEmail(solicitacao.getSessao().getEmail()),
+				new GeoLocalizacao(
+					solicitacao.getOrigem().getLatitude(), 
+					solicitacao.getOrigem().getLatitude()
+				),
+				new GeoLocalizacao(
+					solicitacao.getDestino().getLatitude(), 
+					solicitacao.getDestino().getLatitude()
+				),
+				solicitacao.getCategoria(),
+				solicitacao.getPrecoEstimado()
+			);
+
+			cadastroCorridas.adicionar(c);
+
+			return ResponseEntity.ok(c);
+        } catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
+		}
+	}
 }
