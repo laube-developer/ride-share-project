@@ -7,15 +7,6 @@ public class CadastroSessionavel<T extends Sessionavel> extends Cadastro<T> {
         super(tamanho);
     }
 
-    private String email;
-    private String token;
-
-    public String getEmail(){return this.email;}
-    public String getToken(){return this.token;}
-    
-    public void setEmail(String email){this.email = email;}
-    public void setToken(String token){this.token = token;}
-
     public T getSessao(String token, String email){
 		for (T item : this.lista) {
 			if (item.verificarToken(token) && item.verificarEmail(email)) return item;
@@ -59,6 +50,15 @@ public class CadastroSessionavel<T extends Sessionavel> extends Cadastro<T> {
     public T getSessao(String email){
         for (T item : lista){
             if (item.verificarEmail(email)) return item;
+        }
+
+        System.out.println("Sessao não encontrada");
+        return null;
+    }
+
+    public T buscarPorToken(String token){
+        for (T item : lista){
+            if (item.verificarToken(token)) return item;
         }
 
         System.out.println("Sessao não encontrada");
