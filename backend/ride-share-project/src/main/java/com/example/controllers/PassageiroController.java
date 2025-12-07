@@ -6,7 +6,6 @@ import com.example.entidades.GeoLocalizacao;
 import com.example.enums.StatusCorridaEnum;
 import com.example.enums.CategoriaCorridaEnum;
 import com.example.exceptions.EstadoInvalidoException;
-import com.example.examples.Resposta;
 import com.example.exceptions.UsuarioOuSenhaIncorretosException;
 import com.example.exceptions.SaldoInsuficienteException;
 import com.example.parametricos.CadastroAutenticavel;
