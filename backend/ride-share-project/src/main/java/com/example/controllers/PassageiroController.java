@@ -6,7 +6,6 @@ import com.example.entidades.GeoLocalizacao;
 import com.example.enums.StatusCorridaEnum;
 import com.example.enums.CategoriaCorridaEnum;
 import com.example.exceptions.EstadoInvalidoException;
-import com.example.examples.Resposta;
 import com.example.exceptions.UsuarioOuSenhaIncorretosException;
 import com.example.exceptions.SaldoInsuficienteException;
 import com.example.parametricos.CadastroAutenticavel;
@@ -94,7 +93,7 @@ public class PassageiroController {
     }
 
     // ============ PROCESSAR PAGAMENTO ============
-    public static Resposta processarPagamento(
+    public static boolean processarPagamento(
             Passageiro passageiro,
             Corrida corrida,
             MeioDePagamento meioSelecionado) {
@@ -135,19 +134,16 @@ public class PassageiroController {
                 throw new SaldoInsuficienteException("Saldo insuficiente no meio de pagamento selecionado.");
             }
 
-            return new Resposta(
-                    OperacaoPassageiro.PAGAMENTO.getNome(),
-                    true,
-                    "Pagamento processado com sucesso. Valor: R$ " + (valorCorrida / 100.0));
+            return true;
 
         } catch (UsuarioOuSenhaIncorretosException e) {
-            return new Resposta(OperacaoPassageiro.PAGAMENTO.getNome(), false, e.getMessage());
+            return new Resposta(OperacaoEnum.PASSAGEIRO_PAGAMENTO, false, e.getMessage());
         } catch (EstadoInvalidoException e) {
-            return new Resposta(OperacaoPassageiro.PAGAMENTO.getNome(), false, e.getMessage());
+            return new Resposta(OperacaoEnum.PASSAGEIRO_PAGAMENTO, false, e.getMessage());
         } catch (MetodoPagamentoInexistenteException e) {
-            return new Resposta(OperacaoPassageiro.PAGAMENTO.getNome(), false, e.getMessage());
+            return new Resposta(OperacaoEnum.PASSAGEIRO_PAGAMENTO, false, e.getMessage());
         } catch (SaldoInsuficienteException e) {
-            return new Resposta(OperacaoPassageiro.PAGAMENTO.getNome(), false, e.getMessage());
+            return new Resposta(OperacaoEnum.PASSAGEIRO_PAGAMENTO, false, e.getMessage());
         }
     }
 
