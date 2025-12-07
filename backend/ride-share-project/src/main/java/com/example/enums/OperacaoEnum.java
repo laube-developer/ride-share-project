@@ -18,6 +18,7 @@ public enum OperacaoEnum {
     MOTORISTA_INICIAR_CORRIDA("motorista-iniciar-corrida"),
     MOTORISTA_CANCELAR_CORRIDA("motorista-cancelar-corrida"),
     MOTORISTA_FINALIZAR_CORRIDA("motorista-finalizar-corrida"),
+    MOTORISTA_ADICIONAR_VEICULO("motorista-adicionar-veiculo"),
     MOTORISTA_TROCAR_VEICULO("motorista-trocar-veiculo"),
     MOTORISTA_REMOVER_VEICULO("motorista-remover-veiculo"),
     MOTORISTA_LISTAR_VEICULOS("motorista-listar-veiculos"),
