@@ -7,6 +7,7 @@ public class Passageiro extends Usuario implements Autenticavel{
 	
 	private Cadastro<MeioDePagamento> meioDePagamento;
 	private MeioDePagamento meioPadrao;
+	private int saldo; // em centavos; negativo = débito pendente
 	
 	public Passageiro(String nome, String email, String senha, String cpf, String telefone){
 		super(nome, email, senha, cpf, telefone);
@@ -17,6 +18,7 @@ public class Passageiro extends Usuario implements Autenticavel{
 		this.cpf = cpf;
 		this.telefone = telefone;
 		
+		this.saldo = 0; // Inicia com saldo zerado
 		meioDePagamento = new Cadastro<MeioDePagamento>(5); //limite do usuario 5 meios
 	}
 	
@@ -63,5 +65,21 @@ public class Passageiro extends Usuario implements Autenticavel{
 				meioPadrao = null;
 			}
 		}
+	}
+	
+	public int getSaldo() {
+		return saldo;
+	}
+	
+	public void setSaldo(int saldo) {
+		this.saldo = saldo;
+	}
+	
+	public void adicionarDebitoPendente(int valor) {
+		this.saldo -= valor; // Diminui o saldo (fica negativo)
+	}
+	
+	public void quitarDebito(int valor) {
+		this.saldo += valor; // Aumenta o saldo (aproxima de zero)
 	}
 }
