@@ -37,7 +37,6 @@ public abstract class MeioDePagamento {
 		//	System.out.println("Meio de pagamento nao cadastrado.");
 		//	return false;
 		//}
-		//Pelo amor de Deus alguem me ajuda
 
 
 		this.meioPadrao = meioPadrao;

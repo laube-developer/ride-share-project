@@ -23,11 +23,17 @@ import com.example.entidades.Motorista;
 import com.example.entidades.Passageiro;
 import com.example.entidades.Sessao;
 import com.example.enums.OperacaoEnum;
+import com.example.enums.StatusCorridaEnum;
 import com.example.exceptions.EstadoInvalidoException;
 import com.example.exceptions.UsuarioOuSenhaIncorretosException;
+import com.example.exceptions.PagamentoPendenteException;
+import com.example.exceptions.MetodoPagamentoInexistenteException;
+import com.example.exceptions.SaldoInsuficienteException;
+import com.example.exceptions.MotoristaInvalidoException;
 import com.example.parametricos.Cadastro;
 import com.example.parametricos.CadastroAutenticavel;
 import com.example.parametricos.CadastroSessionavel;
+import com.example.controllers.MotoristaController;
 
 import java.util.UUID;
 
@@ -153,12 +159,12 @@ public class RideShareProject {
 			Corrida c = PassageiroController.solicitarCorrida(
 				cadastroPassageiro.buscarPorEmail(solicitacao.getSessao().getEmail()),
 				new GeoLocalizacao(
-					solicitacao.getOrigem().getLatitude(), 
-					solicitacao.getOrigem().getLatitude()
+					solicitacao.getOrigem().getLatitude(),
+					solicitacao.getOrigem().getLongitude()
 				),
 				new GeoLocalizacao(
-					solicitacao.getDestino().getLatitude(), 
-					solicitacao.getDestino().getLatitude()
+					solicitacao.getDestino().getLatitude(),
+					solicitacao.getDestino().getLongitude()
 				),
 				solicitacao.getCategoria(),
 				solicitacao.getPrecoEstimado()
@@ -167,8 +173,278 @@ public class RideShareProject {
 			cadastroCorridas.adicionar(c);
 
 			return ResponseEntity.ok(c);
-        } catch (Exception e) {
+        } catch (PagamentoPendenteException e) {
+			return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED).body(e.getMessage());
+		} catch (EstadoInvalidoException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
 		}
+	}
+
+	@PostMapping("/api/passageiro/cancelar-corrida")
+	ResponseEntity<Object> cancelarCorrida(@RequestBody SolicitacaoCorrida solicitacao) {
+		try {
+			Passageiro passageiro = cadastroPassageiro.buscarPorEmail(solicitacao.getSessao().getEmail());
+			Corrida corrida = buscarCorridaAtivaPorPassageiro(passageiro);
+
+			PassageiroController.cancelarCorrida(passageiro, corrida);
+
+			return ResponseEntity.ok("Corrida cancelada com sucesso.");
+
+		} catch (EstadoInvalidoException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
+		}
+	}
+
+	@PostMapping("/api/passageiro/processar-pagamento")
+	ResponseEntity<Object> processarPagamento(@RequestBody SolicitacaoCorrida solicitacao) {
+		try {
+			Passageiro passageiro = cadastroPassageiro.buscarPorEmail(solicitacao.getSessao().getEmail());
+			Corrida corrida = buscarCorridaConcluídaPorPassageiro(passageiro);
+
+			PassageiroController.processarPagamento(passageiro, corrida, null);
+
+			return ResponseEntity.ok("Pagamento processado com sucesso.");
+
+		} catch (EstadoInvalidoException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		} catch (MetodoPagamentoInexistenteException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		} catch (SaldoInsuficienteException e) {
+			return ResponseEntity.status(HttpStatus.PAYMENT_REQUIRED).body(e.getMessage());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
+		}
+	}
+
+	// ============ MOTORISTA ENDPOINTS ============
+
+	@PostMapping("/api/motorista/login")
+	ResponseEntity<Object> motoristaLogin(@RequestBody CredenciaisLogin credenciais) {
+		try {
+			Motorista motoristaAutenticado = MotoristaController.login(credenciais, cadastroMotorista);
+
+			String novoToken = UUID.randomUUID().toString();
+
+			if (cadastroSessoes.temSessaoAtiva(credenciais.getEmail())) {
+				Sessao s = cadastroSessoes.getSessao(credenciais.getEmail());
+				cadastroSessoes.removerSessoesAbertas(s.getUsuario().getEmail());
+			}
+
+			Sessao s = new Sessao();
+			s.setUsuario(motoristaAutenticado);
+			cadastroSessoes.adicionar(s);
+
+			SessaoFrontend resposta = new SessaoFrontend(
+				motoristaAutenticado.getNome(),
+				novoToken,
+				motoristaAutenticado.getEmail(),
+				"MOTORISTA",
+				true,
+				"Login realizado com sucesso!"
+			);
+
+			return ResponseEntity.ok(resposta);
+
+		} catch (UsuarioOuSenhaIncorretosException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		}
+	}
+
+	@PostMapping("/api/motorista/logout")
+	ResponseEntity<Object> motoristaLogout(@RequestBody SessaoFrontend sessao) {
+		try {
+			if (cadastroSessoes.temSessaoAtiva(sessao.getEmail())) {
+				boolean ok = cadastroSessoes.removerSessao(sessao.getSessaoToken(), sessao.getEmail());
+
+				if (!ok)
+					throw new Exception("Falha ao fazer logout");
+			}
+
+			return ResponseEntity.ok("");
+
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
+		}
+	}
+
+	@PostMapping("/api/motorista/ficar-online")
+	ResponseEntity<Object> motoristaFicarOnline(@RequestBody SessaoFrontend sessao) {
+		try {
+			Motorista motorista = (Motorista) cadastroSessoes.buscarPorToken(sessao.getSessaoToken()).getUsuario();
+
+			MotoristaController.ficarOnline(motorista);
+
+			return ResponseEntity.ok("Motorista ficou online com sucesso.");
+
+		} catch (MotoristaInvalidoException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		} catch (UsuarioOuSenhaIncorretosException e) {
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
+		}
+	}
+
+	@PostMapping("/api/motorista/ficar-offline")
+	ResponseEntity<Object> motoristaFicarOffline(@RequestBody SessaoFrontend sessao) {
+		try {
+			Motorista motorista = (Motorista) cadastroSessoes.buscarPorToken(sessao.getSessaoToken()).getUsuario();
+
+			MotoristaController.ficarOffline(motorista);
+
+			return ResponseEntity.ok("Motorista ficou offline com sucesso.");
+
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
+		}
+	}
+
+	@PostMapping("/api/motorista/aceitar-corrida")
+	ResponseEntity<Object> motoristaAceitarCorrida(@RequestBody SolicitacaoCorrida solicitacao) {
+		try {
+			Motorista motorista = (Motorista) cadastroSessoes.buscarPorToken(solicitacao.getSessao().getSessaoToken()).getUsuario();
+			// TODO: Buscar a corrida solicitada
+			Corrida corrida = null; // cadastroCorridas.buscarPorStatus(StatusCorridaEnum.SOLICITADA);
+
+			MotoristaController.aceitarCorrida(motorista, corrida);
+
+			// se a corrida foi localizada, retornamos o objeto corrida para que o passageiro e o motorista vejam os detalhes
+			if (corrida != null) {
+				return ResponseEntity.ok(corrida);
+			}
+			return ResponseEntity.ok("Corrida aceita com sucesso.");
+
+		} catch (EstadoInvalidoException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		} catch (MotoristaInvalidoException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
+		}
+	}
+
+	@PostMapping("/api/motorista/iniciar-corrida")
+	ResponseEntity<Object> motoristaIniciarCorrida(@RequestBody SolicitacaoCorrida solicitacao) {
+		try {
+			Motorista motorista = (Motorista) cadastroSessoes.buscarPorToken(solicitacao.getSessao().getSessaoToken()).getUsuario();
+			// TODO: Buscar a corrida aceita do motorista
+			Corrida corrida = null; // cadastroCorridas.buscarPorMotorista(motorista);
+
+			MotoristaController.iniciarCorrida(motorista, corrida);
+
+			return ResponseEntity.ok("Corrida iniciada com sucesso.");
+
+		} catch (EstadoInvalidoException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
+		}
+	}
+
+	@PostMapping("/api/motorista/finalizar-corrida")
+	ResponseEntity<Object> motoristaFinalizarCorrida(@RequestBody SolicitacaoCorrida solicitacao) {
+		try {
+			Motorista motorista = (Motorista) cadastroSessoes.buscarPorToken(solicitacao.getSessao().getSessaoToken()).getUsuario();
+			// TODO: Buscar a corrida em andamento do motorista
+			Corrida corrida = null; // cadastroCorridas.buscarPorMotorista(motorista);
+
+			MotoristaController.finalizarCorrida(motorista, corrida);
+
+			return ResponseEntity.ok("Corrida finalizada com sucesso.");
+
+		} catch (EstadoInvalidoException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
+		}
+	}
+
+	@PostMapping("/api/motorista/cancelar-corrida")
+	ResponseEntity<Object> motoristaCancelarCorrida(@RequestBody SolicitacaoCorrida solicitacao) {
+		try {
+			Motorista motorista = (Motorista) cadastroSessoes.buscarPorToken(solicitacao.getSessao().getSessaoToken()).getUsuario();
+			// TODO: Buscar a corrida do motorista
+			Corrida corrida = null; // cadastroCorridas.buscarPorMotorista(motorista);
+
+			MotoristaController.cancelarCorrida(motorista, corrida);
+
+			return ResponseEntity.ok("Corrida cancelada com sucesso.");
+
+		} catch (EstadoInvalidoException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_GATEWAY).body(e.getMessage());
+		}
+	}
+
+	// ============ MÉTODOS AUXILIARES PARA BUSCAR CORRIDAS ============
+	
+	/**
+	 * Busca uma corrida ativa (SOLICITADA ou ACEITA) do passageiro.
+	 * Retorna null se nenhuma for encontrada.
+	 */
+	private Corrida buscarCorridaAtivaPorPassageiro(Passageiro passageiro) {
+		if (passageiro == null || cadastroCorridas == null) {
+			return null;
+		}
+		
+		for (int i = 0; i < cadastroCorridas.getTamanho(); i++) {
+			Corrida c = cadastroCorridas.buscarPorId(i);
+			if (c != null && c.getPassageiro().equals(passageiro)) {
+				// Retorna se está SOLICITADA ou ACEITA
+				if (c.getStatus() != StatusCorridaEnum.CONCLUIDA && 
+					c.getStatus() != StatusCorridaEnum.CANCELADA) {
+					return c;
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Busca uma corrida concluída (CONCLUIDA) do passageiro.
+	 * Retorna null se nenhuma for encontrada.
+	 */
+	private Corrida buscarCorridaConcluídaPorPassageiro(Passageiro passageiro) {
+		if (passageiro == null || cadastroCorridas == null) {
+			return null;
+		}
+		
+		for (int i = 0; i < cadastroCorridas.getTamanho(); i++) {
+			Corrida c = cadastroCorridas.buscarPorId(i);
+			if (c != null && c.getPassageiro().equals(passageiro)) {
+				if (c.getStatus() == StatusCorridaEnum.CONCLUIDA) {
+					return c;
+				}
+			}
+		}
+		return null;
+	}
+	
+	/**
+	 * Busca uma corrida ativa (ACEITA) do motorista.
+	 * Retorna null se nenhuma for encontrada.
+	 */
+	private Corrida buscarCorridaAtivaPorMotorista(Motorista motorista) {
+		if (motorista == null || cadastroCorridas == null) {
+			return null;
+		}
+		
+		for (int i = 0; i < cadastroCorridas.getTamanho(); i++) {
+			Corrida c = cadastroCorridas.buscarPorId(i);
+			if (c != null && c.getMotorista() != null && c.getMotorista().equals(motorista)) {
+				if (c.getStatus() == StatusCorridaEnum.ACEITA || 
+					c.getStatus() == StatusCorridaEnum.EM_ANDAMENTO) {
+					return c;
+				}
+			}
+		}
+		return null;
 	}
 }

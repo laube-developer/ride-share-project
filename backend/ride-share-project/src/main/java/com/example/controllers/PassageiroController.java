@@ -43,8 +43,7 @@ public class PassageiroController {
         }
 
         // Verificar se o passageiro tem saldo negativo (débitos pendentes)
-        int saldoPassageiro = 0; // TODO: buscar saldo real do passageiro
-        if (saldoPassageiro < 0) {
+        if (passageiro.getSaldo() < 0) {
             throw new PagamentoPendenteException("Usuário realize o pagamento de suas pendências.");
         }
 
@@ -122,15 +121,14 @@ public class PassageiroController {
 
         // Verificar se já existe um método de pagamento do mesmo tipo cadastrado
         if (passageiro.getMeiosDePagamento() != null && passageiro.getMeiosDePagamento().getTamanho() > 0) {
-            
-             for (int i = 0; i < passageiro.getMeiosDePagamento().getTamanho(); i++) {
-                 MeioDePagamento meioExistente = passageiro.getMeiosDePagamento().buscar(i);
-                 if (meioExistente.getClass().equals(meio.getClass())) {
-                     throw new MetodoDePagamentoDuplicadoException(
-                         "Já existe um " + meio.getClass().getSimpleName() + " cadastrado."
-                     );
-                 }
-             }
+            for (int i = 0; i < passageiro.getMeiosDePagamento().getTamanho(); i++) {
+                MeioDePagamento meioExistente = passageiro.getMeiosDePagamento().buscarPorId(i);
+                if (meioExistente.getClass().equals(meio.getClass())) {
+                    throw new MetodoDePagamentoDuplicadoException(
+                        "Já existe um " + meio.getClass().getSimpleName() + " cadastrado."
+                    );
+                }
+            }
         }
 
         passageiro.cadastrarMeioDePagamento(meio);
