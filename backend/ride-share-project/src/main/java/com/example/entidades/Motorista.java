@@ -1,5 +1,6 @@
 package com.example.entidades;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.example.enums.StatusMotoristaEnum;
@@ -19,7 +20,8 @@ public class Motorista extends Usuario implements Autenticavel {
     		String telefone
     	) {
         super(nome, email, senha, cpf, telefone);
-        
+        this.veiculos = new ArrayList<>();
+        this.status = StatusMotoristaEnum.OFFLINE;
     }
 
     // Getters e Setters

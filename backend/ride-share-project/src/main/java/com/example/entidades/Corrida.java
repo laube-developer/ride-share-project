@@ -39,6 +39,14 @@ public class Corrida {
 		return motorista;
 	}
 	
+	public void setMotorista(Motorista motorista) {
+		this.motorista = motorista;
+	}
+	
+	public void setStatus(StatusCorridaEnum status) {
+		this.status = status;
+	}
+	
 	public GeoLocalizacao getPartida() {
 		return localPartida;
 	}
