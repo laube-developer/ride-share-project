@@ -65,7 +65,7 @@ public class PassageiroController {
     }
 
     // ============ CANCELAR CORRIDA ============
-    public static Resposta cancelarCorrida(Passageiro passageiro, Corrida corrida) {
+    public static boolean cancelarCorrida(Passageiro passageiro, Corrida corrida) {
         try {
             // 1. Validar passageiro e corrida
             if (passageiro == null || corrida == null) {
