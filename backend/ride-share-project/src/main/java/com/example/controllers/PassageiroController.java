@@ -13,6 +13,7 @@ import com.example.exceptions.PagamentoPendenteException;
 import com.example.exceptions.UsuarioOuSenhaIncorretosException;
 import com.example.exceptions.EstadoInvalidoException;
 import com.example.exceptions.MetodoPagamentoInexistenteException;
+import com.example.exceptions.MetodoDePagamentoDuplicadoException;
 import com.example.exceptions.SaldoInsuficienteException;
 import com.example.parametricos.CadastroAutenticavel;
 import com.example.parametricos.CadastroSessionavel;
@@ -35,10 +36,16 @@ public class PassageiroController {
         GeoLocalizacao destino,
         CategoriaCorridaEnum categoria,
         int precoEstimado
-    ) throws EstadoInvalidoException {
+    ) throws EstadoInvalidoException, PagamentoPendenteException {
 
         if (origem == null || destino == null) {
             throw new EstadoInvalidoException("Origem e destino devem ser informados.");
+        }
+
+        // Verificar se o passageiro tem saldo negativo (débitos pendentes)
+        int saldoPassageiro = 0; // TODO: buscar saldo real do passageiro
+        if (saldoPassageiro < 0) {
+            throw new PagamentoPendenteException("Usuário realize o pagamento de suas pendências.");
         }
 
         // Criar e retornar a corrida
@@ -51,11 +58,6 @@ public class PassageiroController {
             null,
             passageiro
         );
-    
-    // Aqui tenho que colocar o PagamentoPendenteException, vai funionar assim: se o saldo for negativo, ele joga a exception
-    // if(saldo<0){ // saldo negativo, ele ta devendo
-    // throw new PagamentoPendenteException("Usuário realize o pagamento de suas
-    // pendências.");}
 
         return novaCorrida;
     }
@@ -112,12 +114,24 @@ public class PassageiroController {
     public static void adicionarMeioPagamento(
         Passageiro passageiro,
         MeioDePagamento meio
-    ) throws MetodoPagamentoInexistenteException {
+    ) throws MetodoPagamentoInexistenteException, MetodoDePagamentoDuplicadoException {
         
         if (passageiro == null || meio == null) {
             throw new MetodoPagamentoInexistenteException("Dados inválidos.");
         }
-    // Aqui tem que mudar a exception, uma para verificar se o metódo já esta cadastrado
+
+        // Verificar se já existe um método de pagamento do mesmo tipo cadastrado
+        if (passageiro.getMeiosDePagamento() != null && passageiro.getMeiosDePagamento().getTamanho() > 0) {
+            
+             for (int i = 0; i < passageiro.getMeiosDePagamento().getTamanho(); i++) {
+                 MeioDePagamento meioExistente = passageiro.getMeiosDePagamento().buscar(i);
+                 if (meioExistente.getClass().equals(meio.getClass())) {
+                     throw new MetodoDePagamentoDuplicadoException(
+                         "Já existe um " + meio.getClass().getSimpleName() + " cadastrado."
+                     );
+                 }
+             }
+        }
 
         passageiro.cadastrarMeioDePagamento(meio);
     }

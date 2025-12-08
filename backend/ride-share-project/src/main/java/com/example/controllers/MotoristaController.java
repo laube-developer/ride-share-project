@@ -3,12 +3,12 @@ package com.example.controllers;
 import com.example.entidades.Corrida;
 import com.example.entidades.Motorista;
 import com.example.entidades.Veiculo;
-import com.example.enums.OperacaoEnum;
 import com.example.enums.StatusCorridaEnum;
 import com.example.enums.StatusMotoristaEnum;
 import com.example.exceptions.EstadoInvalidoException;
 import com.example.exceptions.MotoristaInvalidoException;
 import com.example.exceptions.UsuarioOuSenhaIncorretosException;
+import com.example.exceptions.VeiculoNaoCadastradoException;
 import com.example.parametricos.CadastroAutenticavel;
 import com.example.dtos.requisicao.CredenciaisLogin;
 
@@ -70,7 +70,7 @@ public class MotoristaController {
         throws EstadoInvalidoException, MotoristaInvalidoException {
         
         if (motorista == null || corrida == null) {
-            throw new EstadoInvalidoException("Motorista ou corrida inválido.");
+            throw new MotoristaInvalidoException("Motorista ou corrida inválido.");
         }
 
         if (corrida.getStatus() != StatusCorridaEnum.SOLICITADA) {
@@ -87,10 +87,6 @@ public class MotoristaController {
 
     public static void iniciarCorrida(Motorista motorista, Corrida corrida) 
         throws EstadoInvalidoException {
-        
-        if (motorista == null || corrida == null) {
-            throw new EstadoInvalidoException("Motorista ou corrida inválido.");
-        }
 
         if (corrida.getStatus() != StatusCorridaEnum.ACEITA) {
             throw new EstadoInvalidoException("Corrida deve estar aceita para iniciar.");
@@ -105,10 +101,6 @@ public class MotoristaController {
 
     public static void finalizarCorrida(Motorista motorista, Corrida corrida) 
         throws EstadoInvalidoException {
-        
-        if (motorista == null || corrida == null) {
-            throw new EstadoInvalidoException("Motorista ou corrida inválido.");
-        }
 
         if (corrida.getStatus() != StatusCorridaEnum.EM_ANDAMENTO) {
             throw new EstadoInvalidoException("Corrida deve estar em andamento para finalizar.");
@@ -123,10 +115,6 @@ public class MotoristaController {
 
     public static void cancelarCorrida(Motorista motorista, Corrida corrida) 
         throws EstadoInvalidoException {
-        
-        if (motorista == null || corrida == null) {
-            throw new EstadoInvalidoException("Motorista ou corrida inválido.");
-        }
 
         if (!corrida.getMotorista().equals(motorista)) {
             throw new EstadoInvalidoException("Apenas o motorista da corrida pode cancelá-la.");
@@ -137,28 +125,42 @@ public class MotoristaController {
         }
     }
 
-    //Criar método para adicionar veículo
-
-    public static void trocarVeiculo(Motorista motorista, Veiculo veiculo) 
-        throws MotoristaInvalidoException, EstadoInvalidoException {
+    public static void adicionarVeiculo(Motorista motorista, Veiculo veiculo) 
+        throws EstadoInvalidoException {
         
-        if (motorista == null || veiculo == null) {
-            throw new MotoristaInvalidoException("Motorista ou veículo inválido.");
+        if (veiculo == null) {
+            throw new EstadoInvalidoException("Veículo inválido.");
         }
 
-    // Fazer verificação de novo veiculo chamando um método de validação
+        // Validar documentação do veículo
+        if (!veiculo.isDocumentacaoValida()) {
+            throw new EstadoInvalidoException("Documentação do veículo inválida.");
+        }
+
+        motorista.trocarVeiculo(veiculo);
+    }
+
+    public static void trocarVeiculo(Motorista motorista, Veiculo veiculo) 
+        throws EstadoInvalidoException {
+
         if (motorista.getStatus() == StatusMotoristaEnum.ONLINE) {
             throw new EstadoInvalidoException("Motorista deve estar offline para trocar veículo.");
+        }
+
+        // Validar o novo veículo
+        if (veiculo == null || !veiculo.isDocumentacaoValida()) {
+            throw new EstadoInvalidoException("Documentação do novo veículo inválida.");
         }
 
         motorista.setVeiculoAtivo(veiculo);
     }
 
     public static void removerVeiculo(Motorista motorista, Veiculo veiculo) 
-        throws MotoristaInvalidoException, EstadoInvalidoException {
-        
-        if (motorista == null || veiculo == null) {
-            throw new MotoristaInvalidoException("Motorista ou veículo inválido.");
+        throws VeiculoNaoCadastradoException, EstadoInvalidoException {
+
+        //Verificar se não tem nenhum veículo cadastrado
+        if (motorista.getVeiculos().isEmpty()) {
+            throw new VeiculoNaoCadastradoException("Não há veículos cadastrados para remover.");
         }
 
         if (motorista.getVeiculoAtivo().equals(veiculo)) {
@@ -168,9 +170,11 @@ public class MotoristaController {
         motorista.removerVeiculo(veiculo);
     }
 
-    public static int listarVeiculos(Motorista motorista) throws MotoristaInvalidoException {
-        if (motorista == null) {
-            throw new MotoristaInvalidoException("Motorista inválido.");
+    public static int listarVeiculos(Motorista motorista) throws VeiculoNaoCadastradoException {
+
+        //Verificar se não tem nenhum veículo cadastrado
+        if (motorista.getVeiculos().isEmpty()) {
+            throw new VeiculoNaoCadastradoException("Não há veículos cadastrados.");
         }
 
         return motorista.getVeiculos().size();

@@ -1,8 +1,5 @@
 package com.example.entidades;
 
-//import com.example.entidades.Passageiro; mano o meu projeto ta mais amarelo que tudo mds
-//import com.example.parametricos.Cadastro; nao sei, so acho que talvez funcione
-
 public abstract class MeioDePagamento {
 	
 	private final String nomeMeioPagamento; // final pq na teoria ele nao deveria mudar, se o cartao muda o metodo vira outro, ele cadastra outro
