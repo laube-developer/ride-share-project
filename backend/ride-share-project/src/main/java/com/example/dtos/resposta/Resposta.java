@@ -1,11 +1,11 @@
 package com.example.dtos.resposta;
 
 import com.example.enums.OperacaoEnum;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
-/**
- * Classe para gerenciar a reposta do backend para o frontend
- */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Resposta {
+    
     private boolean status = true;
     private String mensagem = "";
     private OperacaoEnum operacao;
@@ -19,41 +19,39 @@ public class Resposta {
     public Resposta(OperacaoEnum operacao) {
         this.operacao = operacao;
     }
-
-    public String json() {
-        return String.format(
-            "{ \"nome\": \"%s\", \"status\": %s, \"mensagem\": \"%s\" }",
-            operacao,
-            status,
-            mensagem
-        );
+    
+    public Resposta(OperacaoEnum operacao, String mensagemErro) {
+        this.operacao = operacao;
+        this.status = false;
+        this.mensagem = mensagemErro;
     }
-
-    public Resposta setNome(OperacaoEnum operacao) {
+    
+    
+    public OperacaoEnum getOperacao() {
+        return operacao;
+    }
+    
+    public boolean getStatus() {
+        return status;
+    }
+    
+    public String getMensagem() {
+        return mensagem;
+    }
+    
+    public Resposta setOperacao(OperacaoEnum operacao) {
         this.operacao = operacao;
         return this;
     }
-
+    
     public Resposta setStatus(boolean status) {
         this.status = status;
         return this;
     }
-
+    
     public Resposta setMensagem(String mensagem) {
         this.mensagem = mensagem;
         return this;
-    }
-
-    public OperacaoEnum getOperacao() {
-        return operacao;
-    }
-
-    public boolean getStatus() {
-        return status;
-    }
-
-    public String getMensagem() {
-        return mensagem;
     }
 
 }

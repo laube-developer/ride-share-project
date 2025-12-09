@@ -22,6 +22,7 @@ import com.example.parametricos.CadastroSessionavel;
  * PassageiroController - Camada de controle para operações de passageiro
  * O tratamento de exceções é feito na classe RideShareProject.java
  */
+
 public class PassageiroController {
     public static boolean verificarSessao(
         CadastroSessionavel<Sessao> cadastroSessoes,

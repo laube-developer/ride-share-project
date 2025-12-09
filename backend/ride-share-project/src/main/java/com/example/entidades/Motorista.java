@@ -51,7 +51,7 @@ public class Motorista extends Usuario implements Autenticavel {
     		return true;
     }
 
-    public void trocarVeiculo(Veiculo veiculo) {
+    public void adicionarVeiculo(Veiculo veiculo) {
         veiculos.add(veiculo);
     }
 

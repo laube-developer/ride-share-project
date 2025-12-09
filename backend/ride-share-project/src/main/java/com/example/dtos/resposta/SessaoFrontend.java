@@ -1,31 +1,17 @@
 package com.example.dtos.resposta;
 
-import com.example.enums.OperacaoEnum;
-
-public class SessaoFrontend extends Resposta{
+public class SessaoFrontend{
     private String nomeDeUsuario;
     private String sessaoToken;
     private String email;
     private String categoria;
 
-    //     private boolean status = true;
-    // private String mensagem = "";
-    // private Operacao operacao;
-
     public SessaoFrontend(
         String nomeDeUsuario,
         String sessaoToken,
         String email,
-        String categoria,
-        boolean status,
-        String mensagem
+        String categoria
     ){  
-        super(
-            OperacaoEnum.PASSAGEIRO_LOGIN,
-            status,
-            mensagem
-        );
-
         this.nomeDeUsuario = nomeDeUsuario;
         this.sessaoToken = sessaoToken;
         this.email = email;
@@ -57,7 +43,7 @@ public class SessaoFrontend extends Resposta{
         this.email = email;
     }
 
-    public String getCatetoria(){
+    public String getCategoria(){
         return categoria;
     }
 

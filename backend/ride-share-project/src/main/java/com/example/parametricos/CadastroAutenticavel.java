@@ -16,7 +16,7 @@ public class CadastroAutenticavel<T extends Autenticavel> extends Cadastro<T> {
 			if (item.getEmail().equals(email)) return item;
 		}
 
-		System.out.println("Objeto não encontrado.");
+		System.out.println("Autenticavel: Objeto não encontrado.");
 		return null;
 	}
 }

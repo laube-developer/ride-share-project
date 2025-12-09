@@ -12,7 +12,7 @@ public class CadastroSessionavel<T extends Sessionavel> extends Cadastro<T> {
 			if (item.verificarToken(token) && item.verificarEmail(email)) return item;
 		}
 
-		System.out.println("Objeto não encontrado.");
+		System.out.println("Sessionavel: Objeto não encontrado.");
 		return null;
 	}
 
@@ -64,4 +64,5 @@ public class CadastroSessionavel<T extends Sessionavel> extends Cadastro<T> {
         System.out.println("Sessao não encontrada");
         return null;
     }
+    
 }

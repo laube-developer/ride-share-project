@@ -2,6 +2,7 @@ package com.example.controllers;
 
 import com.example.entidades.Corrida;
 import com.example.entidades.Motorista;
+import com.example.entidades.Sessao;
 import com.example.entidades.Veiculo;
 import com.example.enums.StatusCorridaEnum;
 import com.example.enums.StatusMotoristaEnum;
@@ -9,14 +10,19 @@ import com.example.exceptions.EstadoInvalidoException;
 import com.example.exceptions.MotoristaInvalidoException;
 import com.example.exceptions.UsuarioOuSenhaIncorretosException;
 import com.example.exceptions.VeiculoNaoCadastradoException;
+
 import com.example.parametricos.CadastroAutenticavel;
+import com.example.parametricos.CadastroSessionavel;
 import com.example.dtos.requisicao.CredenciaisLogin;
+import com.example.dtos.resposta.SessaoFrontend;
 
 /**
  * MotoristaController - Camada de controle para operações de motorista
  * O tratamento de exceções é feito na classe RideShareProject.java
  */
 public class MotoristaController {
+
+
 
     public static Motorista login(
         CredenciaisLogin credenciais,
@@ -38,6 +44,13 @@ public class MotoristaController {
         }
 
         return m;
+    }
+    
+        public static boolean verificarSessao(
+        CadastroSessionavel<Sessao> cadastroSessoes,
+        SessaoFrontend sessaoPassageiro
+    ) {
+        return cadastroSessoes.buscarPorToken(sessaoPassageiro.getSessaoToken()) != null;
     }
 
     public static void ficarOnline(Motorista motorista) 
@@ -137,7 +150,8 @@ public class MotoristaController {
             throw new EstadoInvalidoException("Documentação do veículo inválida.");
         }
 
-        motorista.trocarVeiculo(veiculo);
+        motorista.adicionarVeiculo(veiculo);
+        motorista.setVeiculoAtivo(veiculo);
     }
 
     public static void trocarVeiculo(Motorista motorista, Veiculo veiculo) 

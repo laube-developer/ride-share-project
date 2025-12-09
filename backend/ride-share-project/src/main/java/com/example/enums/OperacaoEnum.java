@@ -11,6 +11,7 @@ public enum OperacaoEnum {
     PASSAGEIRO_LOGIN("passageiro-login"),
     PASSAGEIRO_LOGOUT("passageiro-logout"),
     PASSAGEIRO_ALTERAR_DADOS("passageiro-alterar-dados"),
+    PASSAGEIRO_OBTER_MEIOS_PAGAMENTO("passageiro-obter-meios-pagamento"),
     // Motorista operations
     MOTORISTA_FICAR_ONLINE("motorista-ficar-online"),
     MOTORISTA_FICAR_OFFLINE("motorista-ficar-offline"),
@@ -22,9 +23,14 @@ public enum OperacaoEnum {
     MOTORISTA_TROCAR_VEICULO("motorista-trocar-veiculo"),
     MOTORISTA_REMOVER_VEICULO("motorista-remover-veiculo"),
     MOTORISTA_LISTAR_VEICULOS("motorista-listar-veiculos"),
+    MOTORISTA_BUSCAR_VEICULO_ATIVO("motorista-buscar-veiculo-ativo"),
     MOTORISTA_LOGIN("motorista-login"),
     MOTORISTA_LOGOUT("motorista-logout"),
-    MOTORISTA_ALTERAR_DADOS("motorista-alterar-dados");
+    MOTORISTA_ALTERAR_DADOS("motorista-alterar-dados"),
+    MOTORISTA_CONSULTA_CNH("motorista-consulta-cnh"),
+    MOTORISTA_ATUALIZAR_CNH("motorista-atualizar-cnh"),
+
+    VERIFICAR_SESSAO("verificar-sessao");
 
     private final String nome;
     OperacaoEnum(String nome) {

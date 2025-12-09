@@ -23,6 +23,7 @@ public class Sessao implements Sessionavel{
     }
 
     public boolean verificarToken(String token){
+        if (this.token == null) return false;
         return this.token.equals(token);
     }
 

@@ -82,8 +82,8 @@ public class Corrida {
 		if (status != StatusCorridaEnum.EM_ANDAMENTO) {
 			
 			throw new EstadoInvalidoException("Viagem não pode ser finalizada neste estado.");
-			return false;
 		}
+		
 		this.status = StatusCorridaEnum.CONCLUIDA;
 		return true;
 	}
