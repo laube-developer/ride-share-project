@@ -3,6 +3,7 @@
 import Header from '@/components/Header';
 import HeaderMotorista from '@/components/HeaderMotorista';
 import InterfacePrincipal from '@/components/InterfacePrincipal';
+import LoadingPage from '@/components/Loading';
 import DestinoMarker from '@/components/maps/DestinoMarker';
 import DistanceTimeCalculator from '@/components/maps/DistanceTimeCalculator';
 import { LocalizacaoAtual } from '@/components/maps/LocalizacaoAtual';
@@ -13,9 +14,11 @@ import OrigemMarker from '@/components/maps/OrigemMarker';
 import PassageiroMarker from '@/components/maps/PassageiroMarker';
 import RouteCalculator from '@/components/maps/RouteCalculator';
 import RoutePolyline from '@/components/maps/RoutePolyline.tsx';
+import useSessionStorage from '@/hooks/useSessionStorage';
 import { Localizacao, StatusCorrida, StatusMotorista } from '@/types/types';
 import { panTo } from '@/util/googleApiMethods';
 import { APIProvider, Map } from '@vis.gl/react-google-maps';
+import { set } from 'date-fns';
 import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
@@ -35,15 +38,17 @@ export type OperacoesMotorista =
 export default function CorridaPage() {
     const [posicao, setPosicao] = useState<{ lat: number; lng: number; name?: string } | null>(null);
     const [origem, setOrigem] = useState<Localizacao | null>({
-        lat: -15.880105436286705,
-        lng: -48.00851267498029,
-        name: "QN1 Conjunto 2/3"
+        lat: -15.988705728337287,
+        lng: -48.04442081619255,
+        name: "UNB Campus Gama"
+        ,
     });
     const [destino, setDestino] = useState<Localizacao | null>({
-        lat: -15.864570401825036,
-        lng: -48.03001610329702,
-        name: "UCB - Universidade Católica de Brasília"
+        lat: -15.833468034603413,
+        lng: -47.953542192718174,
+        name: "Park Shopping Brasília"
     });
+
     const [mostrarRota, setMostrarRota] = useState(false);
     const [rota, setRota] = useState<google.maps.LatLngLiteral[]>([]);
     const [distancia, setDistancia] = useState<number | undefined>(undefined);
@@ -57,7 +62,9 @@ export default function CorridaPage() {
     const [statusCorridaAtual, setStatusCorridaAtual] = useState<StatusCorrida | null>("solicitada")
     const [statusProximaCorrida, setStatusProximaCorrida] = useState<StatusCorrida | null>(null)
 
-    const [statusMotorista, setStatusMotorista] = useState<StatusMotorista>("online");
+    const [statusMotorista, setStatusMotorista] = useState<StatusMotorista>("offline");
+
+    const { session, isLoading } = useSessionStorage('SESSION', '/motorista/login', 'MOTORISTA');
 
     const getPosicaoAtual = (callback: (pos: { lat: number; lng: number } | null) => void) => {
         navigator.geolocation.getCurrentPosition(
@@ -95,10 +102,41 @@ export default function CorridaPage() {
         setRota([]);
     };
 
+    const backend = process.env.NEXT_PUBLIC_SPRIGBOOT_DOMAIN
+
     const operacoes: Record<OperacoesMotorista, (attr?: any) => void> = {
         ficarOnline: () => {
             setStatusMotorista("processando");
-            setTimeout(() => (setStatusMotorista("online")), 2000);
+            fetch(`${backend}/api/motorista/ficar-online`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(session)
+            })
+                .then(async (response) => {
+                    if (response.status !== 200) {
+                        toast.error(await response.text(), { position: "top-right" })
+                        setStatusMotorista("offline")
+                        return
+                    }
+
+                    const message = await response.text()
+
+                    toast.success(message, { position: "top-right" })
+                    setStatusMotorista("online")
+
+                })
+                .catch(error=> {
+                    toast.error("Erro ao ficar online: " + error, { position: "top-right" })
+                    console.error(error)
+                    setStatusMotorista("offline")
+                })
+
+
+
+
+
         },
 
         ficarOffline: () => {
@@ -162,12 +200,15 @@ export default function CorridaPage() {
         }
     }
 
+    if (isLoading || !session) return <LoadingPage />
 
     return (
         <div className="flex flex-col h-dvh relative">
 
             <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!} libraries={["routes"]}>
-                <HeaderMotorista />
+                <HeaderMotorista 
+                    session={session}
+                />
 
                 <Map
                     style={{ width: "100vw", height: "100vh" }}
@@ -191,6 +232,7 @@ export default function CorridaPage() {
                             duracaoAtePassageiro={duracaoAtePassageiro}
                             distanciaAtePassageiro={distanciaAtePassageiro}
                             statusMotorista={statusMotorista}
+                            session={session}
                         />
 
                     </InterfacePrincipal>

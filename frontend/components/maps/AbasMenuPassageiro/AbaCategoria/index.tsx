@@ -6,7 +6,7 @@ import { AbaMenuPassageiro, Categoria, FormaPagamento, StatusCorrida } from "@/t
 import { Button } from "@/components/ui/button";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
 import { MdOutlineKeyboardArrowRight } from "react-icons/md";
-import { Card, CardAction, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardAction, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 
@@ -68,15 +68,23 @@ export default function AbaCategoria({
         <AlertDialog>
             <AlertDialogTrigger asChild>
                 <div className="flex flex-start gap-3 justify-between items-center cursor-pointer bg-slate-100 h-15 p-2">
-                    {formasPagamento[indiceFormaPagamento].tipo == 'credito' && <>
+
+
+                    {formasPagamento && formasPagamento[indiceFormaPagamento].nomeMeioPagamento == 'cartaoDeCredito' && <>
                         <span
                             className="w-8 h-6 rounded-sm bg-black text-xs text-white flex items-center justify-center w-max px-2"
                         >Crédito</span>
                     </>
                     }
+                    {formasPagamento && formasPagamento[indiceFormaPagamento].nomeMeioPagamento == 'PIX' && <>
+                        <span
+                            className="w-8 h-6 rounded-sm bg-green-500 text-xs text-white flex items-center justify-center w-max px-2"
+                        >PIX</span>
+                    </>
+                    }
                     <div className="flex flex-row items-center gap-4">
                         <span>
-                            {formasPagamento[indiceFormaPagamento].nome}
+                            {formasPagamento ? formasPagamento[indiceFormaPagamento].nomeMeioPagamento : 'Carregando...'}
                         </span>
                         <MdOutlineKeyboardArrowRight />
                     </div>
@@ -94,16 +102,22 @@ export default function AbaCategoria({
                         onClick={() => setFormaPagamento(id)}
                     >
                         <CardHeader>
-                            <CardTitle><Badge>{forma.nome}</Badge></CardTitle>
-                            <CardDescription>{forma.descricao}</CardDescription>
+                            <CardTitle><Badge>{forma?.nomeMeioPagamento}</Badge></CardTitle>
+                            <CardDescription>{forma?.nomeMeioPagamento == "cartaoDeCredito" && forma.numero}</CardDescription>
                             <CardAction>
-                                {forma.tipo == 'credito' && <Image
+                                {forma.nomeMeioPagamento == 'cartaoDeCredito' && <Image
                                     alt="Cartão"
                                     width={60}
                                     height={60}
                                     src={'/card.svg'}
                                 />}
+                                {forma.nomeMeioPagamento == 'PIX' && <div className="p-2 text-xs text-white flex items-center justify-center bg-green-500 rounded-md">
+                                    <p>PIX</p>
+                                </div>}
                             </CardAction>
+                            <CardContent>
+                                {forma.nomeMeioPagamento == "cartaoDeCredito" && forma.numero && <p>Número: **** **** **** {forma.numero.slice(-4)}</p>}
+                            </CardContent>
                         </CardHeader>
                     </Card>
                 ))}
@@ -119,8 +133,6 @@ export default function AbaCategoria({
         <Field className="self-end">
             <Button
                 onClick={() => {
-                    setAbaMenu("buscando motorista");
-                    setStatusCorrida('solicitada')
                     if (onBuscarMotorista) onBuscarMotorista();
 
                 }}

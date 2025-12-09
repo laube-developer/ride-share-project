@@ -1,13 +1,53 @@
+"use client"
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldGroup, FieldLabel, FieldLegend } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { toast } from "sonner";
 
-export default function Passageiro(){
+export default function Passageiro() {
+    const [email, setEmail] = useState("");
+    const [senha, setSenha] = useState("");
+
+    const router = useRouter()
+
+    const login = () => {
+        const backend = process.env.NEXT_PUBLIC_SPRIGBOOT_DOMAIN;
+
+        fetch(`${backend}/api/motorista/login`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                "email": email,
+                "senha": senha,
+            })
+        })
+            .then(async (data) => {
+                if (data.status != 200) {
+                    toast.error(await data.text(), {
+                        position: "top-right"
+                    })
+                    return
+                }
+
+                const sessionData = await data.json();
+                console.log(sessionData);
+                sessionStorage.setItem('SESSION', JSON.stringify(sessionData));
+                router.push('/motorista/corrida')
+            })
+            .catch(reason => {
+                toast.error("Falha ao realizar login\n" + reason, { position: "top-right" });
+            })
+    }
+
     return (
         <div className="w-full h-screen flex py-5 px-3 justify-center items-center bg-white">
             <div className="flex w-full h-full absolute left-0 top-0">
-                <Image 
+                <Image
                     width={1920}
                     height={1500}
                     src="/login_background.jpg"
@@ -25,7 +65,7 @@ export default function Passageiro(){
                     </div>
                     <Field>
                         <FieldLabel htmlFor="email">
-                        Email
+                            Email
                         </FieldLabel>
                         <Input
                             id="email"
@@ -33,8 +73,9 @@ export default function Passageiro(){
                             placeholder="exemplo@mail.com"
                             required
                             autoCapitalize="none"
-
-                        />
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
+                        />  
                     </Field>
 
                     <Field>
@@ -49,7 +90,8 @@ export default function Passageiro(){
                             placeholder="********"
                             required
                             autoCapitalize="none"
-
+                            value={senha}
+                            onChange={e => setSenha(e.target.value)}
                         />
                     </Field>
 
@@ -58,9 +100,9 @@ export default function Passageiro(){
                     </Field>
 
                     <Field orientation="horizontal">
-                        <Button type="submit" className="cursor-pointer bg-[#fdc426] text-black hover:bg-[#ffcb2c] w-full">Entrar</Button>
+                        <Button onClick={login} type="button" className="cursor-pointer bg-[#fdc426] text-black hover:bg-[#ffcb2c] w-full">Entrar</Button>
                     </Field>
-                    
+
                 </FieldGroup>
             </form>
         </div>

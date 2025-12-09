@@ -2,7 +2,7 @@
 
 import { FieldGroup } from "@/components/ui/field";
 
-import { useEffect, useRef, useState } from "react";
+import { use, useEffect, useRef, useState } from "react";
 import { useMap } from "@vis.gl/react-google-maps";
 
 import { toast } from "sonner"
@@ -15,6 +15,9 @@ import AbaCorrida from "../AbasMenuPassageiro/AbaCorrida";
 import AbaPagamento from "../AbasMenuPassageiro/AbaPagamento";
 import { AbaMenuPassageiro, Categoria, FormaPagamento, Geolocalizacao, Localizacao, Motorista, PagamentoStatus, Sessao, StatusCorrida } from "@/types/types";
 import { handleUpdateDestino, handleUpdateOrigem } from "@/util/googleApiMethods";
+import { useRouter } from "next/navigation";
+import LoadingPage from "@/components/Loading";
+import { text } from "stream/consumers";
 
 type MenuPassageiroProps = {
     onSelecionarOrigem?: (loc: Localizacao) => void;
@@ -33,19 +36,7 @@ const motorista: Motorista = {
     img_url: 'https://github.com/laube-developer.png'
 }
 
-const formasDePagamento: FormaPagamento[] = [
-    {
-        nome: "final 4689",
-        tipo: 'credito',
-        descricao: 'MasterCard'
-    },
-    {
-        nome: "Saldo em Conta",
-        tipo: 'saldo em conta',
-        descricao: 'Saldo atual R$ 67,63'
-    },
 
-];
 
 export default function MenuPassageiro({
     onSelecionarOrigem,
@@ -60,6 +51,7 @@ export default function MenuPassageiro({
     const [destino, setDestino] = useState<Localizacao>(null);
     const [abaMenu, setAbaMenu] = useState<AbaMenuPassageiro>("origem");
     const [categoria, setCategoria] = useState<Categoria>('luxo');
+    const [formasDePagamento, setFormasDePagamento] = useState<FormaPagamento[]>([])
 
     const inputOrigemRef = useRef<HTMLInputElement | null>(null);
     const inputDestinoRef = useRef<HTMLInputElement | null>(null);
@@ -71,6 +63,11 @@ export default function MenuPassageiro({
 
     const [statusPagamento, setStatusPagamento] = useState<PagamentoStatus>(null)
 
+    const router = useRouter();
+
+    const [isSessionValidated, setIsSessionValidated] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
+
     const onPlaceSelectedOrigem = (place: google.maps.places.PlaceResult) => {
         const loc = place.geometry?.location;
         if (!loc) return;
@@ -80,10 +77,11 @@ export default function MenuPassageiro({
             lat: loc.lat(),
             lng: loc.lng(),
         },
-        setOrigem,
-        onSelecionarOrigem,
-        map   
-    )}
+            setOrigem,
+            onSelecionarOrigem,
+            map
+        )
+    }
 
     const onPlaceSelectedDestino = (place: google.maps.places.PlaceResult) => {
         const loc = place.geometry?.location;
@@ -94,10 +92,132 @@ export default function MenuPassageiro({
             lat: loc.lat(),
             lng: loc.lng(),
         },
-        setDestino,
-        onSelecionarDestino,
-        map
-    )}
+            setDestino,
+            onSelecionarDestino,
+            map
+        )
+    }
+
+    useEffect(() => {
+        if (!session) {
+            router.push('/passageiro/login');
+        };
+    }, [session]);
+
+
+
+    useEffect(() => {
+        const backend = process.env.NEXT_PUBLIC_SPRIGBOOT_DOMAIN || 'http://localhost:8080';
+
+        const loadPaymentMethods = async () => {
+            if (!session) return;
+
+            try {
+
+                const response = await fetch(`${backend}/api/passageiro/formas-pagamento`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        "nomeDoUsuario": session.nomeDeUsuario,
+                        "sessaoToken": session.sessaoToken,
+                        "email": session.email,
+                        "categoria": session.categoria
+                    }),
+                });
+
+                if (!response.ok) {
+                    const errorDetails = await response.text();
+                    toast.error(`Erro ${response.status} ao carregar formas de pagamento.\n${errorDetails}`);
+                    return;
+                }
+
+                let data: FormaPagamento[] | null = null;
+
+                const contentType = response.headers.get("content-type");
+
+                if (contentType && contentType.includes("application/json") && response.status === 200) {
+                    const textData = await response.clone().text();
+
+                    if (textData.length > 0) {
+                        try {
+                            console.log(data)
+                            data = await response.json();
+                        } catch (e) {
+                            console.error("Falha ao parsear JSON:", e);
+                            data = [];
+                        }
+                    }
+                }
+
+                const carregadas = data || [];
+
+                setFormasDePagamento(carregadas);
+
+                console.log('Formas de Pagamento carregadas (Dados):', carregadas);
+
+
+            } catch (error) {
+                console.error('Erro de rede ou desconhecido:', error);
+                toast.error('Falha de conexão ao carregar pagamentos.');
+            }
+        };
+
+        loadPaymentMethods();
+
+    }, [session]);
+
+    useEffect(() => {
+        if (abaMenu !== "buscando motorista" || !session) return;
+
+        const intervalo = setInterval(() => {
+            console.log("Verificando status da corrida... ");
+
+            console.log(session.email)
+
+            const envio = {
+                "nomeDeUsuario": session?.nomeDeUsuario,
+                "sessaoToken": session?.sessaoToken,
+                "email": session.email,
+                "categoria": session?.categoria
+            }
+
+            console.log(session.email)
+
+            fetch(`${process.env.NEXT_PUBLIC_SPRIGBOOT_DOMAIN}/api/passageiro/verificar-corrida-ativa`, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(envio)
+            })
+                .then(async (data) => {
+                    if (data.status != 200) {
+                        const errorText = await data.text();
+                        toast.error(`Erro ao verificar corrida: ${errorText}`, {
+                            position: "top-right"
+                        })
+                        return
+                    }
+
+                    const statusData = await data.json();
+                    console.log("Status da corrida:", statusData);
+
+                    if (statusData.statusCorrida === "") {
+                        setAbaMenu("corrida");
+                        setStatusCorrida("iniciada");
+                        toast.success("Motorista a caminho!", {
+                            position: "top-right"
+                        })
+                    }
+                })
+                .catch(reason => {
+                    toast.error("Falha ao verificar corrida\n" + reason, { position: "top-right" });
+                })
+        }, 5000);
+        return () => clearInterval(intervalo);
+    }, [abaMenu, session]);
 
     return (
         <div className="md:p-2 items-center flex justify-start">
@@ -145,7 +265,42 @@ export default function MenuPassageiro({
                         setAbaMenu={setAbaMenu}
                         setCategoria={setCategoria}
                         setStatusCorrida={setStatusCorrida}
-                        onBuscarMotorista={onBuscarMotorista}
+                        onBuscarMotorista={() => {
+                            fetch(`${process.env.NEXT_PUBLIC_SPRIGBOOT_DOMAIN}/api/passageiro/solicitar-corrida`, {
+                                method: "POST",
+                                headers: {
+                                    "Content-Type": "application/json"
+                                },
+                                body: JSON.stringify({
+                                    "sessao": session,
+                                    "origem": origem,
+                                    "destino": destino,
+                                    "categoria": categoria == 'luxo' ? 'LUXO' : 'COMUM',
+                                    "precoEstimado": distancia ? (categoria == 'luxo' ? 5 + (distancia * 2) : 5 + distancia) * 10 : 0
+                                })
+                            })
+                                .then(async (data) => {
+                                    if (data.status != 200) {
+                                        const errorText = await data.text();
+                                        toast.error(`Erro ao solicitar corrida: ${errorText}`, {
+                                            position: "top-right"
+                                        })
+                                        return
+                                    }
+
+                                    if (onBuscarMotorista) onBuscarMotorista()
+                                    setAbaMenu("buscando motorista");
+                                    setStatusCorrida('solicitada')
+
+                                    toast.success("Corrida solicitada com sucesso!", {
+                                        position: "top-right"
+                                    })
+                                    setAbaMenu("buscando motorista")
+                                })
+                                .catch(reason => {
+                                    toast.error("Falha ao solicitar corrida\n" + reason, { position: "top-right" });
+                                })
+                        }}
                         abaMenu={abaMenu}
                         formasPagamento={formasDePagamento}
                         indiceFormaPagamento={formaAtualDePagamento}

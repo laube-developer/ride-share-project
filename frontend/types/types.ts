@@ -1,7 +1,11 @@
 export type FormaPagamento = {
-    nome: string;
-    tipo: string;
+    nomeMeioPagamento: string;
     descricao: string;
+    numero?: string,
+    validade?: string,
+    cvv?: string,
+    chave?: string,
+    saldo?: number,
 }
 
 type Usuario = {
@@ -50,8 +54,13 @@ export type StatusCorrida =
 export type StatusMotorista = "online" | "offline" | "em_corrida" | "processando";
 
 export type Sessao = {
-    userEmail: string,
+    email: string,
     sessaoToken: string,
     nomeDeUsuario: string,
     categoria: "PASSAGEIRO" | "MOTORISTA",
+}
+
+export type CNH = {
+    numero: string,
+    validade: Date
 }

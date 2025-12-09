@@ -23,7 +23,7 @@ export default function ViagemPage() {
     const [rota, setRota] = useState<google.maps.LatLngLiteral[]>([]);
     const [distancia, setDistancia] = useState<number | undefined>(undefined);
     const [duracao, setDuracao] = useState<number | undefined>(undefined);
-    const {session, isLoading } = useSessionStorage('SESSION', '/passageiro/login', 'PASSAGEIRO');
+    const { session, isLoading } = useSessionStorage('SESSION', '/passageiro/login', 'PASSAGEIRO');
 
 
     const getPosicaoAtual = (callback: (pos: { lat: number; lng: number } | null) => void) => {
@@ -50,7 +50,7 @@ export default function ViagemPage() {
 
     const handleSelecionarOrigem = (loc: Localizacao) => {
         if (!loc) return
-        
+
         setOrigem({ lat: loc?.lat, lng: loc?.lng, name: loc?.name });
         setMostrarRota(false);
         setRota([]);
@@ -58,25 +58,25 @@ export default function ViagemPage() {
 
     const handleSelecionarDestino = (loc: Localizacao) => {
         if (!loc) return
-        
+
         setDestino({ lat: loc?.lat, lng: loc?.lng, name: loc?.name });
         setMostrarRota(true);
         setRota([]);
     };
 
-    
+
     if (isLoading || !session) return <LoadingPage />
 
     return (
         <div className="flex flex-col h-dvh relative">
 
             <APIProvider apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY!}>
-                <Header sessao={session}/>
+                <Header sessao={session} />
 
                 <Map
                     style={{ width: "100vw", height: "100vh" }}
                     defaultCenter={posicao || { lat: 22.54992, lng: 0 }}
-                    defaultZoom={posicao ? 15 : 3}
+                    defaultZoom={posicao && !mostrarRota ? 15 : 3} 
                     gestureHandling="greedy"
                     disableDefaultUI
                     mapId={process.env.NEXT_PUBLIC_MAP_ID!}
@@ -87,7 +87,7 @@ export default function ViagemPage() {
                         <MenuPassageiro
                             onSelecionarOrigem={handleSelecionarOrigem}
                             onSelecionarDestino={handleSelecionarDestino}
-                            onBuscarMotorista={() => setMostrarRota(true)}
+                            onBuscarMotorista={() => setMostrarRota(false)}
                             posicao={posicao}
                             distancia={distancia}
                             getPosicaoAtual={getPosicaoAtual}

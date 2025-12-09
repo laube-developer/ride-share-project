@@ -12,13 +12,12 @@ export const panTo = (loc: Geolocalizacao, map: google.maps.Map | null, zoom?: n
     })
 
     map.setOptions({isFractionalZoomEnabled: true})
+    
     map.setCenter({ lat: loc.lat, lng: loc.lng })
 
     setTimeout(() => {
-        map.setZoom(zoom ?? 15)
         map.setOptions({gestureHandling: "greedy", zoomControl: true})
     }, 2000);
-
 }
 
 export const handleUpdateOrigem = (loc: Localizacao, setOrigem: Dispatch<SetStateAction<Localizacao>>, onSelecionarOrigem: ((loc: Localizacao) => void) | undefined, map: google.maps.Map | null) => {
